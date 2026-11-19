@@ -1,0 +1,95 @@
+[
+  {
+    "id": "winter-health-202612",
+    "date": "2026-12-01",
+    "issue": "2026年12月号",
+    "status": "先行掲載・12月号",
+    "category": "季節の健康管理",
+    "title": "冬の感染症に備える、毎日の健康習慣",
+    "subtitle": "手洗い・換気・休養と、食事で意識したい栄養素",
+    "intro": "寒さが本格的になる季節。手洗いや換気などの基本的な感染対策に加えて、日ごろの食事や睡眠にも目を向けてみませんか。無理なく続けられる身近な工夫をご紹介します。",
+    "habits": [
+      {
+        "icon": "wash",
+        "title": "手洗いをていねいに",
+        "description": "外出後や食事の前には、石けんと流水で手を洗いましょう。"
+      },
+      {
+        "icon": "air",
+        "title": "こまめに換気",
+        "description": "室内の空気がこもらないよう、換気設備や窓を上手に使いましょう。"
+      },
+      {
+        "icon": "moon",
+        "title": "十分な休養を",
+        "description": "睡眠時間を確保し、バランスのよい食事と無理のない生活を心がけましょう。"
+      }
+    ],
+    "nutrients": [
+      {
+        "name": "ビタミンC",
+        "summary": "皮膚や粘膜の健康維持を助ける栄養素。",
+        "foods": "みかん、ブロッコリー、キウイフルーツ",
+        "symbol": "C",
+        "color": "orange"
+      },
+      {
+        "name": "ビタミンD",
+        "summary": "カルシウムの吸収と骨の健康維持に関わる栄養素。",
+        "foods": "鮭、サバ、卵黄",
+        "symbol": "D",
+        "color": "green"
+      },
+      {
+        "name": "たんぱく質",
+        "summary": "筋肉や臓器など体をつくる大切な材料で、抗体にも関わります。",
+        "foods": "魚、卵、豆腐、肉",
+        "symbol": "P",
+        "color": "blue"
+      }
+    ],
+    "seasonal": [
+      {
+        "emoji": "🍊",
+        "name": "みかん",
+        "note": "手軽な果物として"
+      },
+      {
+        "emoji": "🥦",
+        "name": "ブロッコリー",
+        "note": "温かい副菜にも"
+      },
+      {
+        "emoji": "🐟",
+        "name": "鮭",
+        "note": "焼き魚や汁物に"
+      },
+      {
+        "emoji": "🥣",
+        "name": "豆腐",
+        "note": "鍋物やみそ汁に"
+      }
+    ],
+    "conclusion": "どれか一つの栄養素や食品だけで感染症を防げるわけではありません。手洗い・換気などの基本的な対策に加えて、食事全体のバランスと十分な休養を大切にしましょう。",
+    "line_post": "🌿 タカハシ薬局の健康だより｜12月号\n\n【冬の感染症に備える健康習慣】\n外出後の手洗い、こまめな換気、十分な睡眠を心がけましょう。\n\n食事では、ビタミンC（みかん・ブロッコリー）、ビタミンD（鮭・卵）、たんぱく質（魚・豆腐など）を含む食品を、バランスよく取り入れるのがおすすめです。\n\n特定の食品だけで感染症を予防できるわけではありません。毎日の小さな習慣を大切にしましょう😊\n\nタカハシ薬局",
+    "sources": [
+      {
+        "label": "厚生労働省｜令和8年度冬季 急性呼吸器感染症（ARI）対策 Q&A",
+        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/kenkou/kekkaku-kansenshou/infulenza/QA2026.html"
+      },
+      {
+        "label": "厚生労働省 eJIM｜ビタミンC",
+        "url": "https://www.ejim.mhlw.go.jp/public/overseas/c03/09.html"
+      },
+      {
+        "label": "厚生労働省 eJIM｜ビタミンD",
+        "url": "https://www.ejim.mhlw.go.jp/public/overseas/c03/10.html"
+      },
+      {
+        "label": "厚生労働省 e-ヘルスネット｜たんぱく質",
+        "url": "https://kennet.mhlw.go.jp/information/information/dictionary/food/ye-044"
+      }
+    ],
+    "publish_on": "2026-11-19"
+  }
+]
