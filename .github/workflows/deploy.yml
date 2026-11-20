@@ -5,8 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # 毎月1日 午前9時（日本時間）に、登録済みの記事データからサイトを再構築
-    - cron: '0 0 1 * *'
+    # 毎月25日 午前9時30分（日本時間）に、公開日を迎えた記事データからサイトを再構築
+    - cron: '30 0 25 * *'
 
 permissions:
   contents: read
