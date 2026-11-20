@@ -23,16 +23,17 @@ def read(name):
 
 articles=read('articles.json')
 recipes=read('recipes.json')
+products=read('products.json')
 
 
 def layout(title,section,body,desc='',root='../'):
-    nav=[('ホーム',root+'index.html','home'),('健康情報',root+'health/','health'),('薬膳レシピ',root+'recipes/','recipes')]
+    nav=[('ホーム',root+'index.html','home'),('健康情報',root+'health/','health'),('薬膳レシピ',root+'recipes/','recipes'),('おすすめ商品',root+'products/','products')]
     tags=''.join(f'<a href="{E(h)}" {"aria-current=page" if k==section else ""}>{E(t)}</a>' for t,h,k in nav)
-    mobile=''.join(f'<a href="{E(h)}"><span>{emoji}</span>{E(t)}</a>' for (t,h,k),emoji in zip(nav,['🏠','💚','🥣']))
+    mobile=''.join(f'<a href="{E(h)}"><span>{emoji}</span>{E(t)}</a>' for (t,h,k),emoji in zip(nav,['🏠','💚','🥣','🌿']))
     return f'''<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#1b4d37"><meta name="description" content="{E(desc or title)}"><title>{E(title)} | タカハシ薬局</title><link rel="stylesheet" href="{E(root)}assets/style.css"></head>
 <body><div class="ribbon">タカハシ薬局の健康情報をスマホでいつでも</div><header><div class="wrap head"><a class="brand" href="{E(root)}index.html"><em>✚</em> タカハシ薬局</a><nav aria-label="メインメニュー">{tags}</nav></div></header>
 {body}
-<footer class="footer"><div class="wrap">タカハシ薬局｜健康情報・薬膳レシピ<br>このサイトは一般的な健康情報の提供を目的としています。診断・治療に代わるものではありません。</div></footer><div class="mobilebar" aria-label="スマホメニュー">{mobile}</div>
+<footer class="footer"><div class="wrap">タカハシ薬局｜健康情報・薬膳レシピ・おすすめ商品<br>このサイトは一般的な健康情報の提供を目的としています。診断・治療に代わるものではありません。</div></footer><div class="mobilebar" aria-label="スマホメニュー">{mobile}</div>
 <script>document.querySelectorAll('[data-filter]').forEach(input=>input.addEventListener('input',()=>{{const q=input.value.trim().toLowerCase();document.querySelectorAll('[data-search]').forEach(card=>{{card.hidden=!card.dataset.search.toLowerCase().includes(q)}})}}));</script>
 </body></html>'''
 
@@ -65,14 +66,35 @@ def listing(kind,data):
     body=hero('タカハシ薬局 お客様向け',name,'季節の健康情報を、いつでもスマートフォンから。' if is_h else '旬の料理や作り方を、スマートフォンで気軽に。')+f'''<main class="wrap"><section><p class="sectionlabel">LATEST</p><h2>最新{E(name)}</h2>{featured}</section><section><p class="sectionlabel">ARCHIVE</p><h2>過去の{E(name)}も探せます</h2><label for="search" class="small muted">記事タイトルや発行月で検索</label><input id="search" class="search" data-filter type="search" placeholder="例：冬、12月、キムチ" autocomplete="off"><div class="article-list">{lis}</div></section></main>'''
     return layout(name,kind,body,root='../')
 
+
+def product_listing(data):
+    latest=data[0] if data else None
+    if latest:
+        card=f'''<section class="card"><span class="issue">{E(latest["issue"])}</span><h2>{E(latest["title"])}</h2><p>{E(latest.get("description",""))}</p><div class="cta"><a class="btn" href="{E(latest["id"])}.html">商品を見る →</a></div></section>'''
+    else:
+        card='<section class="card"><h2>商品紹介ページを準備しています</h2><p>ただいま掲載内容と商品画像を確認中です。確定した商品から順次ご紹介します。</p></section>'
+    items=''.join(f'<a data-search="{E(p["issue"]+" "+p["title"])}" href="{E(p["id"])}.html"><span class="small">{E(p["issue"])}</span><strong>{E(p["title"])}</strong><span class="small">詳しく見る →</span></a>' for p in data)
+    archive=f'<label for="product-search" class="small muted">商品名・掲載月で検索</label><input id="product-search" data-filter class="search" type="search" placeholder="商品名や掲載月を入力"><div class="article-list">{items}</div>' if data else '<p class="muted">過去の商品紹介は、掲載後にこちらへ蓄積されます。</p>'
+    body=hero('🌿 タカハシ薬局 おすすめ商品','今月のおすすめ・バックナンバー','過去にご紹介した商品もスマートフォンから確認できます。')+f'''<main class="wrap"><section><p class="sectionlabel">LATEST</p><h2>最新のおすすめ商品</h2>{card}</section><section><p class="sectionlabel">ARCHIVE</p><h2>おすすめ商品のバックナンバー</h2>{archive}</section><section class="info"><h3>商品について</h3><p>お薬の使用方法やご自身に合うかなど、ご不明な点は薬局スタッフにご相談ください。紹介記事は一般向けの情報です。</p></section></main>'''
+    return layout('今月のおすすめ・バックナンバー','products',body,root='../')
+
+def product_detail(p):
+    image=p.get('image')
+    photo=f'<img class="recipe-photo" src="../assets/{E(image)}" alt="{E(p["title"])}の商品画像">' if image else ''
+    spec=f'<p><strong>商品情報：</strong>{E(p.get("summary",""))}</p>' if p.get('summary') else ''
+    price=f'<p><strong>価格：</strong>{E(p["price"])}</p>' if p.get('price') else ''
+    caution=f'<div class="info orange"><p>{E(p["caution"])}</p></div>' if p.get('caution') else ''
+    body=hero('🌿 今月のおすすめ · '+p['issue'],p['title'],p.get('description',''))+f'''<main class="wrap"><section class="card"><span class="issue">{E(p["issue"])}</span><div class="recipe-layout" style="margin-top:18px"><div>{photo}</div><div>{spec}{price}<p>{E(p.get("description",""))}</p>{caution}</div></div><div class="cta"><a class="btn" href="./">← おすすめ商品一覧へ</a></div></section></main>'''
+    return layout(p['title'],'products',body,p.get('description',''),root='../')
+
 def front():
     cards=[]
-    for kind,data,emoji,title in [('health',articles,'💚','健康情報'),('recipes',recipes,'🥣','薬膳レシピ')]:
+    for kind,data,emoji,title in [('health',articles,'💚','健康情報'),('recipes',recipes,'🥣','薬膳レシピ'),('products',products,'🌿','今月のおすすめ')]:
         item=data[0] if data else {}
         excerpt=item.get('subtitle',item.get('description','掲載準備中'))
         cards.append(f'<article class="card feature"><div class="label">{emoji}</div><div><span class="issue">{E(item.get("issue","準備中"))}</span><h2>{title}</h2><p>{E(item.get("title",""))}</p><p class="small">{E(excerpt)}</p></div><a class="btn" href="{kind}/">{title}を開く →</a></article>')
-    body=hero('タカハシ薬局 公式LINE', '毎日の健康を、もっと身近に。','季節の健康だよりと、おいしく作れる薬膳レシピをお届けします。')+f'''<main class="wrap"><section><p class="sectionlabel">LINE MENU</p><h2>読みたい情報を選んでください</h2><div class="grid">{''.join(cards)}</div></section><section class="info"><h3>新しい記事について</h3><p>健康情報と薬膳レシピは、毎月新しい記事を追加する予定です。過去の情報も一覧から見られます。</p></section></main>'''
-    return layout('健康情報・薬膳レシピ','home',body,root='./')
+    body=hero('タカハシ薬局 公式LINE', '毎日の健康を、もっと身近に。','季節の健康情報・薬膳レシピ・おすすめ商品をご案内します。')+f'''<main class="wrap"><section><p class="sectionlabel">LINE MENU</p><h2>読みたい情報を選んでください</h2><div class="grid">{''.join(cards)}</div></section><section class="info"><h3>新しい記事について</h3><p>健康情報・薬膳レシピ・おすすめ商品を順次追加します。過去の記事や商品のご案内も各一覧から確認できます。</p></section></main>'''
+    return layout('健康情報・薬膳レシピ・おすすめ商品','home',body,root='./')
 
 def save(path,data):
     path.parent.mkdir(parents=True,exist_ok=True)
@@ -88,9 +110,16 @@ if __name__=='__main__':
             src=CONTENT/'assets'/r[key]
             assert src.is_file(),f'missing file: {src}'
             shutil.copy2(src,OUT/'assets'/src.name)
+    for p in products:
+        if p.get('image'):
+            src=CONTENT/'assets'/p['image']
+            assert src.is_file(),f'missing file: {src}'
+            shutil.copy2(src,OUT/'assets'/src.name)
     save(OUT/'index.html',front())
     save(OUT/'health'/'index.html',listing('health',articles))
     save(OUT/'recipes'/'index.html',listing('recipes',recipes))
+    save(OUT/'products'/'index.html',product_listing(products))
     for a in articles:save(OUT/'health'/f'{a["id"]}.html',health_detail(a))
     for r in recipes:save(OUT/'recipes'/f'{r["id"]}.html',recipe_detail(r))
-    print(f'Success: {SITE_DATE} JST; health={len(articles)}, recipes={len(recipes)}; output={OUT}')
+    for p in products:save(OUT/'products'/f'{p["id"]}.html',product_detail(p))
+    print(f'Success: {SITE_DATE} JST; health={len(articles)}, recipes={len(recipes)}, products={len(products)}; output={OUT}')
