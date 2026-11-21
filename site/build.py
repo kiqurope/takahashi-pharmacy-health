@@ -51,7 +51,13 @@ def health_detail(a):
 def recipe_detail(r):
     ingredients=''.join(f'<li><label><input type="checkbox" aria-label="{E(n)}をチェック"><span>{E(n)}</span></label><strong>{E(v)}</strong></li>' for n,v in r['ingredients'])
     steps=''.join(f'<li>{E(t)}</li>' for t in r['steps'])
-    body=hero('🥣 薬膳レシピ · '+r['issue'],r['title'],r['description'])+f'''<main class="wrap"><section class="card"><span class="issue">{E(r['issue'])}｜{E(r['season'])}</span><div class="recipe-layout" style="margin-top:18px"><div><img class="recipe-photo" src="../assets/{E(r['image'])}" alt="{E(r['title'])}の料理写真"><div class="cta"><a class="btn" href="../assets/{E(r['pdf'])}" download>📄 印刷用PDFを保存</a><a class="btn light" href="../assets/{E(r['pdf'])}" target="_blank">A4レシピを見る</a></div></div><div><h2>材料（{E(r['servings'])}）</h2><p class="muted small">材料をタップするとお買い物チェックができます。</p><ul class="ingredients">{ingredients}</ul></div></div><h2 class="article-sub">作り方</h2><ol class="steps">{steps}</ol><div class="info orange"><h3>おいしく作るワンポイント</h3><p>{E(r['tip'])}</p></div><div class="info" style="margin-top:12px"><h3>食材の豆知識</h3><p>{E(r['food_note'])}</p></div><p class="muted small" style="margin-top:15px">参考：{E(r['source_note'])}</p><div class="cta"><a class="btn" href="./">← レシピ一覧へ</a></div></section></main>'''
+    photo=f'<img class="recipe-photo" src="../assets/{E(r["image"])}" alt="{E(r.get("image_alt",r["title"]+"の料理イメージ"))}">' if r.get('image') else ''
+    if r.get('pdf'):
+        download=f'<a class="btn" href="../assets/{E(r["pdf"])}" download>📄 印刷用PDFを保存</a><a class="btn light" href="../assets/{E(r["pdf"])}" target="_blank">A4レシピを見る</a>'
+    else:
+        download='<button class="btn" onclick="window.print()">🖨️ 印刷・PDFで保存</button>'
+    safety=f'<div class="info orange safety" role="note" style="margin-top:16px"><h3>食品衛生上のご注意</h3><p>{E(r["safety_note"])}</p></div>' if r.get('safety_note') else ''
+    body=hero('🥣 薬膳レシピ · '+r['issue'],r['title'],r['description'])+f'''<main class="wrap"><section class="card"><span class="issue">{E(r['issue'])}｜{E(r['season'])}</span><div class="recipe-layout" style="margin-top:18px"><div>{photo}<div class="cta">{download}</div></div><div><h2>材料（{E(r['servings'])}）</h2><p class="muted small">材料をタップするとお買い物チェックができます。</p><ul class="ingredients">{ingredients}</ul></div></div><h2 class="article-sub">作り方</h2><ol class="steps">{steps}</ol>{safety}<div class="info orange" style="margin-top:12px"><h3>おいしく作るワンポイント</h3><p>{E(r['tip'])}</p></div><div class="info" style="margin-top:12px"><h3>食材の豆知識</h3><p>{E(r['food_note'])}</p></div><p class="muted small" style="margin-top:15px">参考：{E(r['source_note'])}</p><div class="cta"><a class="btn" href="./">← レシピ一覧へ</a></div></section></main>'''
     return layout(r['title'],'recipes',body,r['description'],root='../')
 
 def listing(kind,data):
@@ -107,6 +113,7 @@ if __name__=='__main__':
     shutil.copy2(ROOT/'site'/'style.css',OUT/'assets'/'style.css')
     for r in recipes:
         for key in ('image','pdf'):
+            if not r.get(key): continue
             src=CONTENT/'assets'/r[key]
             assert src.is_file(),f'missing file: {src}'
             shutil.copy2(src,OUT/'assets'/src.name)
