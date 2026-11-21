@@ -32,6 +32,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install PDF generation dependencies
+        run: python -m pip install --disable-pip-version-check reportlab pillow
+
       - name: Build static website from published article data
         run: python site/build.py
 
