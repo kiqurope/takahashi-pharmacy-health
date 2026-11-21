@@ -111,7 +111,8 @@
     "publish_on": "2026-11-21",
     "image": "shijimi-shoyu-zuke-200606.jpg",
     "source_note": "KYOREI「医食同源」 2006年6月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "シジミのしょうゆ漬け（台湾風）（KYOREI原資料掲載の料理写真）"
+    "image_alt": "シジミのしょうゆ漬け（台湾風）（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200606.pdf"
   },
   {
     "id": "easy-borscht-soup-200608",
@@ -179,7 +180,8 @@
     "publish_on": "2026-11-21",
     "image": "easy-borscht-soup-200608.jpg",
     "source_note": "KYOREI「医食同源」 2006年8月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "かんたんボルシチ風スープ（KYOREI原資料掲載の料理写真）"
+    "image_alt": "かんたんボルシチ風スープ（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200608.pdf"
   },
   {
     "id": "kushinsai-spicy-stirfry-200610",
@@ -239,7 +241,8 @@
     "publish_on": "2026-11-21",
     "image": "kushinsai-spicy-stirfry-200610.jpg",
     "source_note": "KYOREI「医食同源」 2006年10月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "空心菜のピリ辛炒め（KYOREI原資料掲載の料理写真）"
+    "image_alt": "空心菜のピリ辛炒め（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200610.pdf"
   },
   {
     "id": "kuri-kinton-200612",
@@ -300,7 +303,8 @@
     "publish_on": "2026-11-21",
     "image": "kuri-kinton-200612.jpg",
     "source_note": "KYOREI「医食同源」 2006年12月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "栗きんとん（KYOREI原資料掲載の料理写真）"
+    "image_alt": "栗きんとん（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200612.pdf"
   },
   {
     "id": "spicy-mapo-tofu-200702",
@@ -401,7 +405,8 @@
     "publish_on": "2026-11-21",
     "image": "spicy-mapo-tofu-200702.jpg",
     "source_note": "KYOREI「医食同源」 2007年2月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "チョイ辛麻婆豆腐（KYOREI原資料掲載の料理写真）"
+    "image_alt": "チョイ辛麻婆豆腐（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200702.pdf"
   },
   {
     "id": "tomato-basil-tortilla-200704",
@@ -466,7 +471,8 @@
     "publish_on": "2026-11-21",
     "image": "tomato-basil-tortilla-200704.jpg",
     "source_note": "KYOREI「医食同源」 2007年4月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "トマトとバジルのトルティージャ（KYOREI原資料掲載の料理写真）"
+    "image_alt": "トマトとバジルのトルティージャ（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200704.pdf"
   },
   {
     "id": "salmon-onion-bagel-200706",
@@ -543,7 +549,8 @@
     "publish_on": "2026-11-21",
     "image": "salmon-onion-bagel-200706.jpg",
     "source_note": "KYOREI「医食同源」 2007年6月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "サーモン・オニオンベーグルサンドイッチ（KYOREI原資料掲載の料理写真）"
+    "image_alt": "サーモン・オニオンベーグルサンドイッチ（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200706.pdf"
   },
   {
     "id": "garlic-watermelon-tomato-soup-200708",
@@ -624,7 +631,8 @@
     "publish_on": "2026-11-21",
     "image": "garlic-watermelon-tomato-soup-200708.jpg",
     "source_note": "KYOREI「医食同源」 2007年8月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "ニンニクとスイカのトマト温スープ（KYOREI原資料掲載の料理写真）"
+    "image_alt": "ニンニクとスイカのトマト温スープ（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200708.pdf"
   },
   {
     "id": "broccoli-tomato-shiso-pasta-200802",
@@ -689,7 +697,8 @@
     "publish_on": "2026-11-21",
     "image": "broccoli-tomato-shiso-pasta-200802.jpg",
     "source_note": "KYOREI「医食同源」 2008年2月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "ブロッコリーとトマトと赤唐辛子のシソパスタ（KYOREI原資料掲載の料理写真）"
+    "image_alt": "ブロッコリーとトマトと赤唐辛子のシソパスタ（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200802.pdf"
   },
   {
     "id": "gomishi-drink-200804",
@@ -724,7 +733,8 @@
     "publish_on": "2026-11-21",
     "image": "gomishi-drink-200804.jpg",
     "source_note": "KYOREI「医食同源」 2008年4月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "五味子ドリンク（KYOREI原資料掲載の料理写真）"
+    "image_alt": "五味子ドリンク（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200804.pdf"
   },
   {
     "id": "spicy-wing-chicken-200808",
@@ -789,6 +799,7 @@
     "publish_on": "2026-11-21",
     "image": "spicy-wing-chicken-200808.jpg",
     "source_note": "KYOREI「医食同源」 2008年8月号（KYOREI）（原資料の料理写真を使用し、スマホ用に編集）",
-    "image_alt": "スパイシーウイングチキン・フーター風（KYOREI原資料掲載の料理写真）"
+    "image_alt": "スパイシーウイングチキン・フーター風（KYOREI原資料掲載の料理写真）",
+    "pdf": "recipe_200808.pdf"
   }
 ]
