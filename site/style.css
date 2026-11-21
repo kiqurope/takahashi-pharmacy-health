@@ -126,3 +126,49 @@ body.site-products {
 .site-products a:focus-visible,
 .site-products button:focus-visible,
 .site-products input:focus-visible {outline-color:#368cc1;}
+
+
+/* Health information pages: warm red identity, independent of blue products. */
+body.site-health {
+  --ink:#4d2730;
+  --leaf:#b23a46;
+  --mint:#fcebf0;
+  --border:#eed8dc;
+  --cream:#fffdfd;
+  --orange:#d98649;
+  --muted:#76535c;
+  --shade:#fff7f8;
+  background:#fff9fa;
+  color:var(--ink);
+}
+.site-health .ribbon {background:#ae3540;}
+.site-health header {background:#fff;border-bottom-color:#efd9dc;}
+.site-health .brand {color:#572d36;}
+.site-health .brand em {color:#ba3a49;}
+.site-health nav a {color:#8a3946;}
+.site-health nav a[aria-current=page],
+.site-health nav a:hover {background:#fce7eb;color:#ab2f3e;}
+.site-health .hero {background:linear-gradient(135deg,#fae3e8 0%,#fff8f9 62%,#fff1ed 100%);}
+.site-health .hero .tag {color:#ae3846;}
+.site-health .hero .lead {color:#80515e;}
+.site-health .sectionlabel {color:#a63440;}
+.site-health .issue {background:#fce9ed;color:#a23b47;}
+.site-health .card {border-color:#efd9dd;box-shadow:0 8px 28px rgba(130,36,52,.055);}
+.site-health .btn {background:#ae3946;color:#fff;}
+.site-health .btn:hover {background:#8f2c39;}
+.site-health .btn.light {background:#faeaed;color:#9e3543;}
+.site-health .info:not(.orange) {background:#fcecf0;border-color:#f1d7df;}
+.site-health .article-list a {border-color:#edd4da;}
+.site-health .article-list a:hover {border-color:#d9919d;background:#fff9fa;}
+.site-health .article-list .small {color:#815a64;}
+.site-health .search {border-color:#d9aab2;background:#fff;}
+.site-health .article-sub {border-color:#d26a7a;}
+.site-health .emblem {background:#fbe9ee;}
+.site-health .mini {border-color:#efd9de;background:#fff;}
+.site-health .food {background:#fff4f5;border-color:#efdce0;}
+.site-health .footer {background:#fff9fa;border-top-color:#efd9dd;color:#795c64;}
+.site-health .mobilebar {border-top-color:#efdae0;box-shadow:0 -4px 18px #912b3e10;}
+.site-health .mobilebar a {color:#9a3745;}
+.site-health a:focus-visible,
+.site-health button:focus-visible,
+.site-health input:focus-visible {outline-color:#d76575;}
