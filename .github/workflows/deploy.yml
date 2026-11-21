@@ -46,6 +46,9 @@ jobs:
         with:
           path: docs
 
+      - name: Allow published artifact metadata to become available
+        run: sleep 12
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
