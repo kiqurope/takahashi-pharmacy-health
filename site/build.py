@@ -74,25 +74,31 @@ def listing(kind,data):
     return layout(name,kind,body,root='../')
 
 
+def product_photo(p):
+    url=p.get('image_url','')
+    credit=p.get('image_credit','')
+    if url.startswith('https://'):
+        return f'<figure class="product-photo"><img src="{E(url)}" alt="{E(p["title"])}のメーカー公式商品写真" loading="lazy"><figcaption>{E(credit)}</figcaption></figure>'
+    return f'<div class="product-photo product-photo-empty" role="img" aria-label="{E(p["title"])}"><span>🌿</span><strong>{E(p["title"])}</strong></div>'
+
 def product_listing(data):
     latest=data[0] if data else None
     if latest:
-        card=f'''<section class="card"><span class="issue">{E(latest["issue"])}</span><h2>{E(latest["title"])}</h2><p>{E(latest.get("description",""))}</p><div class="cta"><a class="btn" href="{E(latest["id"])}.html">商品を見る →</a></div></section>'''
+        featured=f'''<section class="card product-feature"><div>{product_photo(latest)}</div><div><span class="issue">{E(latest["issue"])} · 最新号</span><p class="product-group">{E(latest.get("group",""))} ／ {E(latest.get("category",""))}</p><h2>{E(latest["title"])}</h2><p class="product-lead">{E(latest.get("description",""))}</p><p>{E(latest.get("summary",""))}</p><span class="stock">✓ タカハシ薬局で取扱あり</span><div class="cta"><a class="btn" href="{E(latest["id"])}.html">商品について詳しく見る →</a></div></div></section>'''
     else:
-        card='<section class="card"><h2>商品紹介ページを準備しています</h2><p>ただいま掲載内容と商品画像を確認中です。確定した商品から順次ご紹介します。</p></section>'
-    items=''.join(f'<a data-search="{E(p["issue"]+" "+p["title"])}" href="{E(p["id"])}.html"><span class="small">{E(p["issue"])}</span><strong>{E(p["title"])}</strong><span class="small">詳しく見る →</span></a>' for p in data)
-    archive=f'<label for="product-search" class="small muted">商品名・掲載月で検索</label><input id="product-search" data-filter class="search" type="search" placeholder="商品名や掲載月を入力"><div class="article-list">{items}</div>' if data else '<p class="muted">過去の商品紹介は、掲載後にこちらへ蓄積されます。</p>'
-    body=hero('🌿 タカハシ薬局 おすすめ商品','今月のおすすめ・バックナンバー','過去にご紹介した商品もスマートフォンから確認できます。')+f'''<main class="wrap"><section><p class="sectionlabel">LATEST</p><h2>最新のおすすめ商品</h2>{card}</section><section><p class="sectionlabel">ARCHIVE</p><h2>おすすめ商品のバックナンバー</h2>{archive}</section><section class="info"><h3>商品について</h3><p>お薬の使用方法やご自身に合うかなど、ご不明な点は薬局スタッフにご相談ください。紹介記事は一般向けの情報です。</p></section></main>'''
-    return layout('今月のおすすめ・バックナンバー','products',body,root='../')
+        featured='<section class="card"><h2>商品紹介ページを準備しています</h2><p>おすすめ商品を確認し、順次ご案内いたします。</p></section>'
+    items=''.join(f'''<a data-search="{E(p["issue"]+" "+p["title"]+" "+p.get("description",""))}" href="{E(p["id"])}.html"><span class="small">{E(p["issue"])} · {E(p.get("category",""))}</span><strong>{E(p["title"])}</strong><span class="small">{E(p.get("description",""))}</span><span class="small product-arrow">商品ページを開く →</span></a>''' for p in data)
+    archive=f'<label for="product-search" class="small muted">商品名や掲載月で検索できます</label><input id="product-search" data-filter class="search" type="search" placeholder="例：若甦、プログリーン、10月" autocomplete="off"><div class="article-list">{items}</div><p class="muted small">これまでにご紹介した商品は、今後もこの一覧からご覧いただけます。</p>' if data else '<p class="muted">バックナンバーは掲載後にこちらへ追加されます。</p>'
+    body=hero('🌿 タカハシ薬局 · LINEリッチメニュー','今月のおすすめ商品','毎月ひとつ、季節や暮らしに合わせた取扱商品をご紹介します。')+f'''<main class="wrap products-page"><section><p class="sectionlabel">THIS MONTH</p><h2>最新のおすすめ</h2>{featured}</section><section id="archive"><p class="sectionlabel">BACK NUMBER</p><h2>バックナンバー</h2>{archive}</section><section class="info product-consult"><h3>ご購入・商品に関するご相談</h3><p>掲載商品はタカハシ薬局で取り扱っています。在庫・販売価格や、ご自身に合うかどうかについては薬局スタッフにお尋ねください。</p><p class="small">営業時間 9:00〜19:00 ／ 定休日 日曜日・祝日</p></section></main>'''
+    return layout('今月のおすすめ商品','products',body,root='../')
 
 def product_detail(p):
-    image=p.get('image')
-    photo=f'<img class="recipe-photo" src="../assets/{E(image)}" alt="{E(p["title"])}の商品画像">' if image else ''
-    spec=f'<p><strong>商品情報：</strong>{E(p.get("summary",""))}</p>' if p.get('summary') else ''
-    price=f'<p><strong>価格：</strong>{E(p["price"])}</p>' if p.get('price') else ''
-    caution=f'<div class="info orange"><p>{E(p["caution"])}</p></div>' if p.get('caution') else ''
-    body=hero('🌿 今月のおすすめ · '+p['issue'],p['title'],p.get('description',''))+f'''<main class="wrap"><section class="card"><span class="issue">{E(p["issue"])}</span><div class="recipe-layout" style="margin-top:18px"><div>{photo}</div><div>{spec}{price}<p>{E(p.get("description",""))}</p>{caution}</div></div><div class="cta"><a class="btn" href="./">← おすすめ商品一覧へ</a></div></section></main>'''
-    return layout(p['title'],'products',body,p.get('description',''),root='../')
+    highlights=''.join(f'<div class="mini"><h3>{E(x["title"])}</h3><p>{E(x["body"])}</p></div>' for x in p.get('highlights',[]))
+    people=''.join(f'<li>{E(x)}</li>' for x in p.get('recommend',[]))
+    sources=f'<a href="{E(p["source_url"])}" target="_blank" rel="noopener noreferrer">{E(p["source_name"])} ↗</a>' if p.get('source_url','').startswith('https://') else ''
+    theme='product-green' if 'progreen' in p['id'] else 'product-red'
+    body=hero('🌿 今月のおすすめ · '+p['issue'],p['title'],p.get('description',''))+f'''<main class="wrap product-detail {theme}"><section class="card"><span class="issue">{E(p["issue"])}</span> <span class="stock">✓ タカハシ薬局で取扱あり</span><div class="product-overview"><div>{product_photo(p)}</div><div><p class="product-group">{E(p.get("maker",""))} ｜ {E(p.get("category",""))}</p><h2>{E(p["title"])}</h2><p class="product-lead">{E(p.get("description",""))}</p><p>{E(p.get("summary",""))}</p><div class="info product-price"><strong>価格・在庫について</strong><p>販売価格や在庫状況は店頭でご確認ください。</p></div></div></div><h2 class="article-sub">この商品の特長</h2><div class="product-highlights">{highlights}</div><h2 class="article-sub">こんな方に</h2><ul class="product-people">{people}</ul><h2 class="article-sub">{'服用方法' if p.get('category')=='第3類医薬品' else '召し上がり方'}</h2><p>{E(p.get("usage",""))}</p><div class="info orange safety" role="note"><h3>ご使用・ご利用上の注意</h3><p>{E(p.get("caution",""))}</p></div><h2 class="article-sub">メーカー公式情報</h2><p>{sources}</p><p class="muted small">※商品の詳細はメーカー公式情報や実際のパッケージ・添付文書をご確認ください。商品の説明は医療機関での診断や治療に代わるものではありません。</p><div class="cta"><a class="btn" href="./">← 今月のおすすめ一覧・バックナンバーへ</a></div></section></main>'''
+    return layout(p['title']+'｜'+p['issue'],'products',body,p.get('description',''),root='../')
 
 def front():
     cards=[]
