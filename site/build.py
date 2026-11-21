@@ -63,13 +63,14 @@ def recipe_detail(r):
 def listing(kind,data):
     is_h=kind=='health'
     name='健康情報' if is_h else '薬膳レシピ'
+    archive_title='過去の健康情報' if is_h else f'過去の{name}も探せます'
     latest=data[0] if data else None
     if latest:
         pic=f'<img class="recipe-card-img" src="../assets/{E(latest["image"])}" alt="{E(latest["title"])}">' if not is_h else '<div style="font-size:65px">💚</div>'
         featured=f'''<section class="card"><div class="grid"><div>{pic}</div><div><span class="issue">{E(latest["issue"])}</span><h2 style="margin-top:12px">{E(latest["title"])}</h2><p>{E(latest.get('intro',latest.get('description','')))}</p><div class="cta"><a class="btn" href="{E(latest['id'])}.html">記事を読む →</a></div></div></div></section>'''
     else: featured='<section class="card">掲載準備中です。</section>'
     lis=''.join(f'<a data-search="{E(x["issue"]+" "+x["title"]+" "+x.get("description",x.get("intro","")))}" href="{E(x["id"])}.html"><span class="small">{E(x["issue"])}</span><strong>{E(x["title"])}</strong><span class="small">詳しく見る →</span></a>' for x in data)
-    body=hero('タカハシ薬局 お客様向け',name,'季節の健康情報を、いつでもスマートフォンから。' if is_h else '旬の料理や作り方を、スマートフォンで気軽に。')+f'''<main class="wrap"><section><p class="sectionlabel">LATEST</p><h2>最新{E(name)}</h2>{featured}</section><section><p class="sectionlabel">ARCHIVE</p><h2>過去の{E(name)}も探せます</h2><label for="search" class="small muted">記事タイトルや発行月で検索</label><input id="search" class="search" data-filter type="search" placeholder="例：冬、12月、キムチ" autocomplete="off"><div class="article-list">{lis}</div></section></main>'''
+    body=hero('タカハシ薬局 お客様向け',name,'季節の健康情報を、いつでもスマートフォンから。' if is_h else '旬の料理や作り方を、スマートフォンで気軽に。')+f'''<main class="wrap"><section><p class="sectionlabel">LATEST</p><h2>最新{E(name)}</h2>{featured}</section><section><p class="sectionlabel">ARCHIVE</p><h2>{E(archive_title)}</h2><label for="search" class="small muted">記事タイトルや発行月で検索</label><input id="search" class="search" data-filter type="search" placeholder="例：冬、12月、キムチ" autocomplete="off"><div class="article-list">{lis}</div></section></main>'''
     return layout(name,kind,body,root='../')
 
 
@@ -130,7 +131,13 @@ if __name__=='__main__':
     save(OUT/'health'/'index.html',listing('health',articles))
     save(OUT/'recipes'/'index.html',listing('recipes',recipes))
     save(OUT/'products'/'index.html',product_listing(products))
-    for a in articles:save(OUT/'health'/f'{a["id"]}.html',health_detail(a))
+    for a in articles:
+        destination=OUT/'health'/f'{a["id"]}.html'
+        if a.get('archive_static'):
+            # Previously published, hand-edited backnumbers remain intact.
+            assert destination.is_file(), f'missing archived health page: {destination}'
+            continue
+        save(destination,health_detail(a))
     for r in recipes:save(OUT/'recipes'/f'{r["id"]}.html',recipe_detail(r))
     for p in products:save(OUT/'products'/f'{p["id"]}.html',product_detail(p))
     print(f'Success: {SITE_DATE} JST; health={len(articles)}, recipes={len(recipes)}, products={len(products)}; output={OUT}')
