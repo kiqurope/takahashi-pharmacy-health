@@ -66,3 +66,63 @@ main{padding-bottom:55px}section{margin:33px 0 0}.card{background:white;border:1
  .product-overview{margin:15px 0 22px}
  .product-overview h2{font-size:27px}
 }
+
+
+/* Recommended products: consistent Takahashi Pharmacy BLUE identity.
+   Scoped to product listing and details, without changing health/recipe pages. */
+body.site-products {
+  --ink:#173b5a;
+  --leaf:#17639a;
+  --mint:#eaf4fc;
+  --border:#d3e3f0;
+  --cream:#fcfeff;
+  --orange:#e39a4e;
+  --muted:#526f86;
+  --shade:#f2f8fe;
+  background:#f6faff;
+  color:var(--ink);
+}
+.site-products .ribbon {background:#175b8c;}
+.site-products header {background:#fff;border-bottom-color:#d4e6f4;}
+.site-products .brand {color:#153f60;}
+.site-products .brand em {color:#227bb7;}
+.site-products nav a {color:#285b83;}
+.site-products nav a[aria-current=page],
+.site-products nav a:hover {background:#e4f2fc;color:#0e598f;}
+.site-products .hero {background:linear-gradient(135deg,#dcefff 0%,#f5fbff 62%,#eaf5fd 100%);}
+.site-products .hero .tag {color:#186a9d;}
+.site-products .hero .lead {color:#476985;}
+.site-products .sectionlabel {color:#17639a;}
+.site-products .issue {background:#e6f2ff;color:#1e6091;}
+.site-products .card {border-color:#d3e3f0;box-shadow:0 8px 27px rgba(20,82,130,.065);}
+.site-products .btn {background:#17639a;color:#fff;}
+.site-products .btn:hover {background:#104e7d;}
+.site-products .btn.light {background:#e4f2fc;color:#155e93;}
+.site-products .article-list a {border-color:#d3e3f0;}
+.site-products .article-list a:hover {border-color:#6ca9d6;background:#fafdff;}
+.site-products .article-list .small {color:#546f88;}
+.site-products .product-arrow {color:#17639a!important;}
+.site-products .search {border-color:#aac9df;background:#fff;}
+.site-products .info:not(.orange) {background:#eaf4fd;border-color:#cde2f2;}
+.site-products .stock {background:#e6f3fc;color:#135d91;border-color:#b9d7ee;}
+.site-products .product-photo,
+.site-products .product-red .product-photo {background:linear-gradient(155deg,#edf7ff,#ffffff);border-color:#d5e7f5;}
+.site-products .product-group {color:#50718e!important;}
+.site-products .product-lead,
+.site-products .product-red .product-lead {color:#165c90;}
+.site-products .product-highlights .mini,
+.site-products .product-red .product-highlights .mini {background:#f5faff;border-color:#d8e7f3;}
+.site-products .product-highlights h3 {color:#145b91;}
+.site-products .product-highlights p {color:#496a81;}
+.site-products .product-people li,
+.site-products .product-red .product-people li {background:#f2f8fe;border-color:#d8e8f4;}
+.site-products .product-people li::before,
+.site-products .product-red .product-people li::before {color:#2174ac;}
+.site-products .article-sub,
+.site-products .product-red .article-sub {border-color:#68a9d4;}
+.site-products .footer {background:#f6faff;border-top-color:#d2e2ef;color:#547087;}
+.site-products .mobilebar {border-top-color:#cfe3f2;box-shadow:0 -4px 18px #104c8910;}
+.site-products .mobilebar a {color:#235e8a;}
+.site-products a:focus-visible,
+.site-products button:focus-visible,
+.site-products input:focus-visible {outline-color:#368cc1;}
