@@ -122,6 +122,10 @@ if __name__=='__main__':
             src=CONTENT/'assets'/p['image']
             assert src.is_file(),f'missing file: {src}'
             shutil.copy2(src,OUT/'assets'/src.name)
+    # Replace only published print PDFs with the detailed A4 editions.
+    # Original DM-format PDFs remain untouched under content/assets.
+    import subprocess, sys
+    subprocess.check_call([sys.executable,str(ROOT/'site'/'generate_recipe_pdfs.py')])
     save(OUT/'index.html',front())
     save(OUT/'health'/'index.html',listing('health',articles))
     save(OUT/'recipes'/'index.html',listing('recipes',recipes))
