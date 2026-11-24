@@ -74,31 +74,141 @@ def listing(kind,data):
     return layout(name,kind,body,root='../')
 
 
-def product_photo(p):
-    url=p.get('image_url','')
-    credit=p.get('image_credit','')
-    if url.startswith('https://'):
-        return f'<figure class="product-photo"><img src="{E(url)}" alt="{E(p["title"])}のメーカー公式商品写真" loading="lazy"><figcaption>{E(credit)}</figcaption></figure>'
-    return f'<div class="product-photo product-photo-empty" role="img" aria-label="{E(p["title"])}"><span>🌿</span><strong>{E(p["title"])}</strong></div>'
+def product_photo(p, variant='detail'):
+    image_url = p.get('image_url', '')
+    credit = p.get('image_credit', '')
+    photo_class = 'p-image p-image-' + variant
+    if image_url.startswith('https://'):
+        priority = 'loading="eager" fetchpriority="high"' if variant == 'featured' else 'loading="lazy"'
+        return f'<figure class="{photo_class}"><img src="{E(image_url)}" alt="{E(p["title"])}の商品パッケージ" {priority} decoding="async"><figcaption>{E(credit)}</figcaption></figure>'
+    return f'<div class="{photo_class} p-image-fallback" role="img" aria-label="{E(p["title"])}"><span aria-hidden="true">✦</span><strong>{E(p["title"])}</strong></div>'
+
 
 def product_listing(data):
-    latest=data[0] if data else None
+    latest = data[0] if data else None
     if latest:
-        featured=f'''<section class="card product-feature"><div>{product_photo(latest)}</div><div><span class="issue">{E(latest["issue"])} · 最新号</span><p class="product-group">{E(latest.get("group",""))} ／ {E(latest.get("category",""))}</p><h2>{E(latest["title"])}</h2><p class="product-lead">{E(latest.get("description",""))}</p><p>{E(latest.get("summary",""))}</p><span class="stock">✓ タカハシ薬局で取扱あり</span><div class="cta"><a class="btn" href="{E(latest["id"])}.html">商品について詳しく見る →</a></div></div></section>'''
+        newest = f'''<article class="p-feature-card">
+          <div class="p-feature-photo">{product_photo(latest, 'featured')}</div>
+          <div class="p-feature-copy">
+            <span class="p-pill p-pill-blue">{E(latest["issue"])}・最新の掲載商品</span>
+            <p class="p-overline">{E(latest.get("maker", ""))} ／ {E(latest.get("category", ""))}</p>
+            <h2>{E(latest["title"])}</h2>
+            <p class="p-catch">{E(latest.get("description", ""))}</p>
+            <p class="p-feature-summary">{E(latest.get("summary", ""))}</p>
+            <div class="p-availability"><span aria-hidden="true">✓</span> タカハシ薬局で取扱あり <span class="p-availability-note">※在庫は店頭でご確認ください</span></div>
+            <a class="p-primary-link" href="{E(latest['id'])}.html">商品の特徴や使い方を見る <span aria-hidden="true">↗</span></a>
+          </div>
+        </article>'''
+        intro_link = f'<a class="p-hero-link" href="#latest">最新のおすすめを見る <span aria-hidden="true">↓</span></a>'
+        intro_month = f'<span class="p-pill p-pill-white">最新号：{E(latest["issue"])}</span>'
     else:
-        featured='<section class="card"><h2>商品紹介ページを準備しています</h2><p>おすすめ商品を確認し、順次ご案内いたします。</p></section>'
-    items=''.join(f'''<a data-search="{E(p["issue"]+" "+p["title"]+" "+p.get("description",""))}" href="{E(p["id"])}.html"><span class="small">{E(p["issue"])} · {E(p.get("category",""))}</span><strong>{E(p["title"])}</strong><span class="small">{E(p.get("description",""))}</span><span class="small product-arrow">商品ページを開く →</span></a>''' for p in data)
-    archive=f'<label for="product-search" class="small muted">商品名や掲載月で検索できます</label><input id="product-search" data-filter class="search" type="search" placeholder="例：若甦、プログリーン、10月" autocomplete="off"><div class="article-list">{items}</div><p class="muted small">これまでにご紹介した商品は、今後もこの一覧からご覧いただけます。</p>' if data else '<p class="muted">バックナンバーは掲載後にこちらへ追加されます。</p>'
-    body=hero('🌿 タカハシ薬局 · LINEリッチメニュー','今月のおすすめ商品','毎月ひとつ、季節や暮らしに合わせた取扱商品をご紹介します。')+f'''<main class="wrap products-page"><section><p class="sectionlabel">THIS MONTH</p><h2>最新のおすすめ</h2>{featured}</section><section id="archive"><p class="sectionlabel">BACK NUMBER</p><h2>バックナンバー</h2>{archive}</section><section class="info product-consult"><h3>ご購入・商品に関するご相談</h3><p>掲載商品はタカハシ薬局で取り扱っています。在庫・販売価格や、ご自身に合うかどうかについては薬局スタッフにお尋ねください。</p><p class="small">営業時間 9:00〜19:00 ／ 定休日 日曜日・祝日</p></section></main>'''
-    return layout('今月のおすすめ商品','products',body,root='../')
+        newest = '<div class="p-feature-empty">次回のおすすめ商品を準備しています。掲載内容が決まり次第こちらに追加します。</div>'
+        intro_link = '<a class="p-hero-link" href="#archive">掲載履歴を見る ↓</a>'
+        intro_month = ''
+
+    cards = []
+    for item in data:
+        group = 'nippo' if '日邦薬品工業' in item.get('group', '') else 'other'
+        keywords = ' '.join(str(item.get(k, '')) for k in ('issue','title','description','summary','maker','group','category'))
+        latest_flag = '<span class="p-current-label">最新号</span>' if latest and item['id'] == latest['id'] else ''
+        cards.append(f'''<a class="p-archive-card" data-product-card data-search="{E(keywords)}" data-group="{E(group)}" href="{E(item['id'])}.html" aria-label="{E(item['issue'])} {E(item['title'])}の商品紹介を読む">
+            <div class="p-archive-media">{product_photo(item, 'thumb')}</div>
+            <div class="p-archive-copy">
+              <span class="p-archive-date">{E(item['issue'])} {latest_flag}</span>
+              <h3>{E(item['title'])}</h3>
+              <p class="p-archive-category">{E(item.get('category',''))}</p>
+              <p class="p-archive-excerpt">{E(item.get('description',''))}</p>
+              <span class="p-archive-arrow">この商品を見る <span aria-hidden="true">↗</span></span>
+            </div>
+        </a>''')
+    card_html = ''.join(cards) if data else '<p class="p-no-items">バックナンバーは商品公開後に掲載します。</p>'
+    archive = f'''<div class="p-archive-toolbar">
+        <div class="p-filters" role="group" aria-label="メーカー分類で絞り込む">
+          <button type="button" data-product-group="all" aria-pressed="true">すべて</button>
+          <button type="button" data-product-group="nippo" aria-pressed="false">日邦薬品工業</button>
+          <button type="button" data-product-group="other" aria-pressed="false">その他の取扱商品</button>
+        </div>
+        <label class="p-search-label" for="product-search">商品名や掲載月から探す</label>
+        <input id="product-search" class="p-search" type="search" placeholder="例：若甦・10月・健康補助食品" autocomplete="off" aria-controls="product-archive-grid">
+        <p class="p-results" id="product-result-count" role="status" aria-live="polite">{len(data)}件の商品</p>
+      </div>
+      <div class="p-archive-grid" id="product-archive-grid">{card_html}</div>
+      <p class="p-no-results" id="product-no-results" hidden>該当する商品はありません。キーワードや絞り込みを変えてみてください。</p>'''
+
+    top = f'''<section class="p-site-hero">
+       <div class="wrap p-site-hero-inner">
+         <div class="p-hero-text"><p class="p-eyebrow">TAKAHASHI PHARMACY <span>MONTHLY PICK</span></p>
+            <h1>毎日の健やかさに、<br><span>ちょうどいい一品を。</span></h1>
+            <p>タカハシ薬局が、季節に合わせておすすめする商品を月替わりでご紹介します。気になる商品は、特徴や使い方をご確認いただけます。</p>
+            <div class="p-hero-actions">{intro_link}<a class="p-hero-ghost" href="#archive">バックナンバーを探す ↓</a></div>
+         </div>
+         <div class="p-hero-art" aria-hidden="true"><div class="p-hero-circle"><span>今月の</span><strong>おすすめ</strong><small>TAKAHASHI PHARMACY</small></div><span class="p-hero-tile p-hero-tile-a">✦</span><span class="p-hero-tile p-hero-tile-b">＋</span></div>
+       </div>
+       <div class="wrap p-hero-issue">{intro_month}</div>
+    </section>'''
+
+    body = top + f'''<main class="wrap p-products-home" id="main-content">
+      <section class="p-section" id="latest" aria-labelledby="p-latest-title">
+        <div class="p-section-heading"><div><p class="p-section-kicker">FEATURED PRODUCT</p><h2 id="p-latest-title">最新のおすすめ商品</h2></div><span class="p-subtle-label">毎月更新</span></div>
+        {newest}
+      </section>
+      <section class="p-section" id="archive" aria-labelledby="p-archive-title">
+        <div class="p-section-heading"><div><p class="p-section-kicker">BACK NUMBERS</p><h2 id="p-archive-title">これまでのおすすめ</h2></div><span class="p-subtle-label">掲載履歴</span></div>
+        <p class="p-section-intro">過去の商品もいつでも見返せます。商品名やメーカー分類から探してみてください。</p>
+        {archive}
+      </section>
+      <section class="p-contact" aria-labelledby="p-consult-title">
+         <span class="p-contact-icon" aria-hidden="true">✚</span>
+         <div><p class="p-section-kicker">ASK YOUR PHARMACIST</p><h2 id="p-consult-title">商品について、気軽にご相談ください</h2>
+         <p>使い方や選び方、販売価格・在庫状況については、タカハシ薬局のスタッフがご案内します。</p>
+         <p class="p-contact-hours">営業時間 9:00〜19:00　／　定休日 日曜日・祝日</p></div>
+      </section>
+      <p class="p-disclaimer">※取扱商品であっても、商品や時期によって在庫状況が異なります。掲載内容は商品の一般的なご案内です。</p>
+    </main>
+    <script src="../assets/products.js" defer></script>'''
+    return layout('今月のおすすめ商品','products',body,'タカハシ薬局の今月のおすすめ商品とバックナンバー。商品ごとの特徴や使い方、注意事項をご紹介します。',root='../')
+
 
 def product_detail(p):
-    highlights=''.join(f'<div class="mini"><h3>{E(x["title"])}</h3><p>{E(x["body"])}</p></div>' for x in p.get('highlights',[]))
-    people=''.join(f'<li>{E(x)}</li>' for x in p.get('recommend',[]))
-    sources=f'<a href="{E(p["source_url"])}" target="_blank" rel="noopener noreferrer">{E(p["source_name"])} ↗</a>' if p.get('source_url','').startswith('https://') else ''
-    theme='product-green' if 'progreen' in p['id'] else 'product-red'
-    body=hero('🌿 今月のおすすめ · '+p['issue'],p['title'],p.get('description',''))+f'''<main class="wrap product-detail {theme}"><section class="card"><span class="issue">{E(p["issue"])}</span> <span class="stock">✓ タカハシ薬局で取扱あり</span><div class="product-overview"><div>{product_photo(p)}</div><div><p class="product-group">{E(p.get("maker",""))} ｜ {E(p.get("category",""))}</p><h2>{E(p["title"])}</h2><p class="product-lead">{E(p.get("description",""))}</p><p>{E(p.get("summary",""))}</p><div class="info product-price"><strong>価格・在庫について</strong><p>販売価格や在庫状況は店頭でご確認ください。</p></div></div></div><h2 class="article-sub">この商品の特長</h2><div class="product-highlights">{highlights}</div><h2 class="article-sub">こんな方に</h2><ul class="product-people">{people}</ul><h2 class="article-sub">{'服用方法' if p.get('category')=='第3類医薬品' else '召し上がり方'}</h2><p>{E(p.get("usage",""))}</p><div class="info orange safety" role="note"><h3>ご使用・ご利用上の注意</h3><p>{E(p.get("caution",""))}</p></div><h2 class="article-sub">メーカー公式情報</h2><p>{sources}</p><p class="muted small">※商品の詳細はメーカー公式情報や実際のパッケージ・添付文書をご確認ください。商品の説明は医療機関での診断や治療に代わるものではありません。</p><div class="cta"><a class="btn" href="./">← 今月のおすすめ一覧・バックナンバーへ</a></div></section></main>'''
+    cards = ''.join(f'''<article class="p-point"><span class="p-point-number">0{i+1}</span><h3>{E(x["title"])}</h3><p>{E(x["body"])}</p></article>''' for i,x in enumerate(p.get('highlights',[])))
+    people = ''.join(f'<li>{E(x)}</li>' for x in p.get('recommend',[]))
+    is_medicine = '医薬品' in p.get('category','')
+    usage_title = '用法・用量' if is_medicine else '召し上がり方'
+    source = f'<a href="{E(p["source_url"])}" target="_blank" rel="noopener noreferrer">メーカー公式の商品ページを確認する <span aria-hidden="true">↗</span></a>' if p.get('source_url','').startswith('https://') else ''
+    others = [x for x in products if x['id'] != p['id']]
+    recommendations = ''.join(f'''<a class="p-related-card" href="{E(x['id'])}.html">
+       {product_photo(x, 'tiny')}<span><small>{E(x['issue'])}</small><strong>{E(x['title'])}</strong><em>商品ページへ ↗</em></span>
+       </a>''' for x in others[:3])
+    medical_note = '<strong>第3類医薬品について</strong><p>用法・用量を守り、服用前に添付文書をよくお読みください。不明な点や体調に関するご相談は薬局スタッフへお尋ねください。</p>' if is_medicine else '<strong>健康補助食品について</strong><p>普段の食事を基本とし、食品として取り入れる商品です。疾病の治療・予防を目的とするものではありません。</p>'
+    body = f'''<main class="wrap p-product-main" id="main-content">
+      <nav aria-label="パンくずリスト" class="p-breadcrumb"><a href="../index.html">ホーム</a><span aria-hidden="true">›</span><a href="./">今月のおすすめ商品</a><span aria-hidden="true">›</span><span aria-current="page">{E(p['title'])}</span></nav>
+      <article>
+        <section class="p-detail-top" aria-labelledby="p-product-name">
+          <div class="p-detail-image">{product_photo(p, 'detail')}</div>
+          <div class="p-detail-summary">
+            <div class="p-detail-badges"><span class="p-pill p-pill-blue">{E(p['issue'])}</span><span class="p-pill p-pill-outline">{E(p.get('category',''))}</span></div>
+            <p class="p-overline">{E(p.get('maker',''))}</p>
+            <h1 id="p-product-name">{E(p['title'])}</h1>
+            <p class="p-catch">{E(p.get('description',''))}</p>
+            <p class="p-detail-intro">{E(p.get('summary',''))}</p>
+            <div class="p-availability"><span aria-hidden="true">✓</span> タカハシ薬局で取扱あり <span class="p-availability-note">※現在の在庫は店頭でご確認ください</span></div>
+            <div class="p-detail-actions"><a class="p-primary-link" href="#features">商品の特徴をチェック ↓</a><a class="p-secondary-link" href="#contact">店舗でのご相談について ↓</a></div>
+          </div>
+        </section>
+        <nav class="p-jump" aria-label="このページの目次"><span>このページでわかること</span><a href="#features">特長</a><a href="#recommended">こんな方に</a><a href="#usage">使い方</a><a href="#caution">注意事項</a></nav>
+        <section class="p-detail-section" id="features" aria-labelledby="p-features-title"><div class="p-detail-section-heading"><p class="p-section-kicker">FEATURES</p><h2 id="p-features-title">この商品の3つの特長</h2><p>商品について、知っておきたいポイントをまとめました。</p></div><div class="p-points">{cards}</div></section>
+        <section class="p-detail-section" id="recommended" aria-labelledby="p-recommend-title"><div class="p-detail-section-heading"><p class="p-section-kicker">FOR YOU</p><h2 id="p-recommend-title">こんな方におすすめ</h2></div><div class="p-recommend-panel"><ul class="p-recommend-list">{people}</ul><p class="p-recommend-note">当てはまる方も、体調や生活習慣に合わせてお選びください。</p></div></section>
+        <section class="p-detail-section" id="usage" aria-labelledby="p-usage-title"><div class="p-detail-section-heading"><p class="p-section-kicker">HOW TO USE</p><h2 id="p-usage-title">{E(usage_title)}</h2></div><div class="p-usage-panel"><span class="p-usage-icon" aria-hidden="true">01</span><p>{E(p.get('usage',''))}</p></div></section>
+        <section class="p-detail-section" id="caution" aria-labelledby="p-caution-title"><div class="p-detail-section-heading"><p class="p-section-kicker">IMPORTANT</p><h2 id="p-caution-title">ご使用前にご確認ください</h2></div><div class="p-care-panel" role="note"><div>{medical_note}</div><p>{E(p.get('caution',''))}</p></div></section>
+        <section class="p-detail-section" id="contact" aria-labelledby="p-contact-title">
+           <div class="p-contact p-contact-detail"><span class="p-contact-icon" aria-hidden="true">✚</span><div><p class="p-section-kicker">ASK YOUR PHARMACIST</p><h2 id="p-contact-title">迷ったら、タカハシ薬局へ</h2><p>ご自身に合うか、価格・在庫、使い方などお気軽にご相談ください。</p><p class="p-contact-hours">営業時間 9:00〜19:00　／　定休日 日曜日・祝日</p></div></div>
+           <div class="p-official"><h3>メーカー公式情報</h3><p>詳しい商品情報・使用上の注意は、メーカー公式ページおよび実際の商品・添付文書でご確認ください。</p>{source}</div>
+        </section>
+        <section class="p-related" aria-labelledby="p-related-title"><div class="p-section-heading"><div><p class="p-section-kicker">OTHER ISSUES</p><h2 id="p-related-title">ほかの月のおすすめ</h2></div></div><div class="p-related-grid">{recommendations}</div><a class="p-backlink" href="./#archive">← すべてのバックナンバーを見る</a></section>
+      </article>
+    </main>'''
     return layout(p['title']+'｜'+p['issue'],'products',body,p.get('description',''),root='../')
+
 
 def front():
     cards=[]
@@ -118,6 +228,7 @@ if __name__=='__main__':
     (OUT/'.nojekyll').write_text('',encoding='utf-8')
     (OUT/'assets').mkdir(exist_ok=True)
     shutil.copy2(ROOT/'site'/'style.css',OUT/'assets'/'style.css')
+    shutil.copy2(ROOT/'site'/'products.js',OUT/'assets'/'products.js')
     for r in recipes:
         for key in ('image','pdf'):
             if not r.get(key): continue
