@@ -219,6 +219,31 @@ def front():
     body=hero('タカハシ薬局 公式LINE', '毎日の健康を、もっと身近に。','季節の健康情報・薬膳レシピ・おすすめ商品をご案内します。')+f'''<main class="wrap"><section><p class="sectionlabel">LINE MENU</p><h2>読みたい情報を選んでください</h2><div class="grid">{''.join(cards)}</div></section><section class="info"><h3>新しい記事について</h3><p>健康情報・薬膳レシピ・おすすめ商品を順次追加します。過去の記事や商品のご案内も各一覧から確認できます。</p></section></main>'''
     return layout('健康情報・薬膳レシピ・おすすめ商品','home',body,root='./')
 
+
+def line_guide(kind):
+    prescription = kind == 'prescription'
+    title = '処方せん送信' if prescription else 'お問い合わせ'
+    label = 'LINEで処方せんを送る' if prescription else 'LINEで相談する'
+    color = '#226b46' if prescription else '#175c96'
+    intro = 'ご来局前に、紙の処方せんの写真をLINEでお送りいただけます。' if prescription else 'お薬や健康について、お気軽にご相談ください。'
+    steps = (
+        '<li>紙の処方せん全体が読めるよう、明るい場所で撮影してください。複数枚ある場合はすべて撮影してください。</li>'
+        '<li>下のボタンから当薬局のLINEトークを開き、写真を添付して送信してください。</li>'
+        '<li>薬局からの返信をご確認ください。お薬の準備には時間がかかる場合があります。</li>'
+        if prescription else
+        '<li>下のボタンから当薬局のLINEトークを開いてください。</li>'
+        '<li>ご相談・ご質問の内容を入力し、送信ボタンを押してください。</li>'
+        '<li>営業時間内に薬局スタッフが順次個別に返信します。</li>'
+    )
+    notice = (
+        '<h2>処方せんのご注意</h2><p>紙の処方せんは、必ず原本を使用期限内に薬局へお持ちください。使用期間は特に指定がない場合、交付日を含めて4日以内（休日・祝日も含む）です。写真の送信だけでは受付・調剤の完了や期限の延長にはなりません。</p><p>期限が迫っている場合やお急ぎの場合は、LINEの返信を待たず薬局に直接ご確認ください。<a href="https://www.mhlw.go.jp/stf/newpage_32041.html" rel="noreferrer">厚生労働省：処方箋の使用期間</a></p>'
+        if prescription else
+        '<h2>ご相談の前に</h2><p>LINEは緊急対応の窓口ではありません。急な重い症状など、緊急の場合は119番等にご相談ください。相談に不要な個人情報は送らないようお願いします。</p>'
+    )
+    return f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>{title} | タカハシ薬局</title><style>
+*{{box-sizing:border-box}}body{{margin:0;background:#f3f7f5;color:#20352e;font:16px/1.8 system-ui,sans-serif;overflow-wrap:anywhere}}header{{background:{color};color:white;padding:16px;text-align:center;font-weight:700}}main{{max-width:640px;margin:auto;padding:18px 16px 32px}}section{{background:white;border:1px solid #dbe5df;border-radius:16px;padding:20px;margin:14px 0}}h1{{font-size:29px;line-height:1.4;margin:8px 0;color:{color}}h2{{font-size:19px;line-height:1.5;margin:0 0 8px}}p{{margin:8px 0}}ol{{padding-left:1.5em;margin:10px 0}}li{{padding:4px 0}}.hours{{font-weight:700}}.button{{display:block;background:#087c3e;color:white;text-align:center;text-decoration:none;font-weight:700;border-radius:12px;padding:16px;margin:18px 0 8px;font-size:18px}}a:focus-visible{{outline:3px solid #c47c00;outline-offset:4px}}.note{{font-size:14px;color:#43534b}}.caution{{border-left:5px solid #b57620}}footer{{text-align:center;font-size:13px;color:#52645a;padding:8px 16px 24px}}
+</style></head><body><header>🍀 タカハシ薬局</header><main><h1>{title}</h1><p>{intro}</p><section><h2>ご利用方法</h2><ol>{steps}</ol><a class="button" href="https://line.me/R/oaMessage/%40299qyrsf" rel="noreferrer">{label} →</a><p class="note">ボタンを押すだけでは送信されません。LINEトークで送信操作をしてください。</p></section><section><h2>営業時間・返信について</h2><p class="hours">営業時間 9:00〜19:00<br>定休日：日曜日・祝日</p><p>営業時間外・定休日に届いたメッセージは翌営業日以降に対応します。</p></section><section class="caution">{notice}</section><section><h2>個人情報について</h2><p class="note">この案内ページには入力・写真アップロード機能はありません。相談や写真の送信は、タカハシ薬局のLINE公式アカウントのトーク画面で行ってください。</p></section></main><footer>タカハシ薬局</footer></body></html>'''
+
 def save(path,data):
     path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(data,encoding='utf-8')
@@ -257,4 +282,6 @@ if __name__=='__main__':
         save(destination,health_detail(a))
     for r in recipes:save(OUT/'recipes'/f'{r["id"]}.html',recipe_detail(r))
     for p in products:save(OUT/'products'/f'{p["id"]}.html',product_detail(p))
+    save(OUT/'contact'/'index.html',line_guide('contact'))
+    save(OUT/'prescription'/'index.html',line_guide('prescription'))
     print(f'Success: {SITE_DATE} JST; health={len(articles)}, recipes={len(recipes)}, products={len(products)}; output={OUT}')
