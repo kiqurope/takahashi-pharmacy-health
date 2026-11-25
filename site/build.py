@@ -98,7 +98,6 @@ def product_listing(data):
             <h2>{E(latest["title"])}</h2>
             <p class="p-catch">{E(latest.get("description", ""))}</p>
             <p class="p-feature-summary">{E(latest.get("summary", ""))}</p>
-            <div class="p-availability"><span aria-hidden="true">✓</span> タカハシ薬局で取扱あり <span class="p-availability-note">※在庫は店頭でご確認ください</span></div>
             <a class="p-primary-link" href="{E(latest['id'])}.html">商品の特徴や使い方を見る <span aria-hidden="true">↗</span></a>
           </div>
         </article>'''
@@ -166,7 +165,7 @@ def product_listing(data):
          <p>使い方や選び方、販売価格・在庫状況については、タカハシ薬局のスタッフがご案内します。</p>
          <p class="p-contact-hours">営業時間 9:00〜19:00　／　定休日 日曜日・祝日</p></div>
       </section>
-      <p class="p-disclaimer">※取扱商品であっても、商品や時期によって在庫状況が異なります。掲載内容は商品の一般的なご案内です。</p>
+      <p class="p-disclaimer">※掲載内容は商品の一般的なご案内です。</p>
     </main>
     <script src="../assets/products.js" defer></script>'''
     return layout('今月のおすすめ商品','products',body,'タカハシ薬局の今月のおすすめ商品とバックナンバー。商品ごとの特徴や使い方、注意事項をご紹介します。',root='../')
@@ -194,7 +193,6 @@ def product_detail(p):
             <h1 id="p-product-name">{E(p['title'])}</h1>
             <p class="p-catch">{E(p.get('description',''))}</p>
             <p class="p-detail-intro">{E(p.get('summary',''))}</p>
-            <div class="p-availability"><span aria-hidden="true">✓</span> タカハシ薬局で取扱あり <span class="p-availability-note">※現在の在庫は店頭でご確認ください</span></div>
             <div class="p-detail-actions"><a class="p-primary-link" href="#features">商品の特徴をチェック ↓</a><a class="p-secondary-link" href="#contact">店舗でのご相談について ↓</a></div>
           </div>
         </section>
