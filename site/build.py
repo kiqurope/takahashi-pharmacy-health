@@ -246,6 +246,10 @@ def front():
         else:
             media=f'<div class="hp-news-media hp-media-{kind}" aria-hidden="true"><span>MONTHLY<br>HEALTH</span></div>'
         cards.append(f'<article class="hp-news hp-{color}"><a href="{E(href)}" class="hp-news-visual" aria-label="{E(item.get("title",title))}">{media}</a><p class="hp-news-kind">{E(title)}</p><span class="issue">{E(item.get("issue","準備中"))}</span><h3><a href="{E(href)}">{E(item.get("title","掲載準備中"))}</a></h3><p>{E(excerpt)}</p><a class="hp-news-all" href="{kind}/">一覧・バックナンバー →</a></article>')
+    photo=(CONTENT/'assets'/'pharmacy-exterior.jpg').is_file()
+    history=(CONTENT/'assets'/'pharmacy-history.jpg').is_file()
+    hero_visual = '<figure class="hp-store-photo"><img src="assets/pharmacy-exterior.jpg" alt="タカハシ薬局の店舗外観" width="1600" height="1200" fetchpriority="high" decoding="async"><figcaption>店舗外観（写真内の営業時間表示は撮影時のものです）</figcaption></figure>' if photo else '''<div class="hp-hero-mark" aria-hidden="true"><svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg"><circle cx="150" cy="130" r="116" fill="#d9ead9"/><circle cx="150" cy="130" r="94" fill="#f7fbf4" stroke="#c4dfc6" stroke-width="2"/><path d="M150 134C112 126 78 101 98 77C121 51 146 82 150 104C154 82 179 51 202 77C222 101 188 126 150 134Z" fill="#75a689"/><path d="M150 134C112 142 78 167 98 191C121 217 146 186 150 164C154 186 179 217 202 191C222 167 188 142 150 134Z" fill="#4b8760"/><path d="M150 130V216" stroke="#3c7351" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="134" r="7" fill="#f7fbf4"/></svg></div>'''
+    history_section = '''<section aria-labelledby="hp-history-title"><p class="sectionlabel">OUR HISTORY</p><h2 id="hp-history-title">タカハシ薬局のあゆみ</h2><div class="hp-history"><figure><img src="assets/pharmacy-history.jpg" alt="昔の高橋薬局の店舗前で撮影された記念写真" width="1600" height="1230" loading="lazy" decoding="async"><figcaption>昔の高橋薬局</figcaption></figure><div><h3>地域とともに歩む薬局</h3><p>昔の店舗写真から、タカハシ薬局のあゆみをご紹介します。これからも地域の皆さまの日々の健康づくりをお手伝いします。</p></div></div></section>''' if history else ''
     style = '''<style>
 .hp-home .wrap{max-width:1200px}
 .hp-home{background:#f8faf7}
@@ -298,12 +302,22 @@ def front():
 .hp-hero-mark .hp-emblem-line{stroke:#75a689}
 @media(max-width:900px){.hp-top-contact,.hp-desktop-nav{display:none}.hp-top{min-height:68px;gap:8px}.hp-top .brand{font-size:20px}.hp-mobile-nav{display:block;position:relative}.hp-mobile-nav summary{cursor:pointer;list-style:none;background:#eef5ed;padding:10px 15px;border-radius:9px;font-size:13px;font-weight:800;color:#285e43}.hp-mobile-nav summary::-webkit-details-marker{display:none}.hp-mobile-nav nav{display:grid;position:absolute;right:0;top:46px;width:min(260px,80vw);background:#fff;border:1px solid #dbe8df;border-radius:13px;box-shadow:0 8px 24px #183a2d22;padding:10px;z-index:20}.hp-mobile-nav nav a{font-size:15px;padding:10px 13px}.hp-hero-inner{grid-template-columns:1.3fr .7fr}}
 @media(max-width:690px){.hp-footer-inner{grid-template-columns:1fr}.hp-footer-inner nav a{padding:8px 4px}.hp-home .mobilebar a{font-size:11px}.hp-news-media{height:175px}.hp-home .wrap{padding-left:16px;padding-right:16px}.hp-hero{padding:30px 0 27px}.hp-hero-inner{grid-template-columns:1fr;gap:4px}.hp-hero-mark{display:none}.hp-hours{grid-template-columns:1fr;padding:17px;gap:10px;margin-top:15px}.hp-services{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.hp-service,.hp-news{padding:14px}.hp-service h3{font-size:16px}.hp-service p{font-size:12px}.hp-service strong{font-size:12px}.hp-news-grid{grid-template-columns:1fr}.hp-access{grid-template-columns:1fr;padding:20px}.hp-main section{margin-top:29px}.hp-hero h1{font-size:32px}}
+.hp-has-photo{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:32px}
+.hp-store-photo,.hp-history figure{margin:0;min-width:0}
+.hp-store-photo img,.hp-history img{display:block;width:100%;height:auto;border-radius:16px}
+.hp-store-photo img{box-shadow:0 12px 35px #183a2d22}
+.hp-store-photo figcaption,.hp-history figcaption{font-size:11px;color:#52675b;margin-top:7px}
+.hp-history{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center;background:#fff;border:1px solid #dce8df;border-radius:18px;padding:24px}
+.hp-history p{color:#52675b}
+@media(max-width:900px){.hp-has-photo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media(max-width:690px){.hp-has-photo{grid-template-columns:1fr;gap:20px}.hp-store-photo{grid-row:1}.hp-store-photo img{border-radius:12px}.hp-history{grid-template-columns:1fr;padding:16px;gap:14px}}
 </style>'''
-    body=style+f'''<section class="hp-hero"><div class="wrap hp-hero-inner"><div><p class="hp-kicker">TAKAHASHI PHARMACY · 川崎大師駅近く</p><h1>毎日の健康に、<br>寄り添う薬局。</h1><p class="lead">お薬や健康のご相談から、日々の健康づくりまで。タカハシ薬局は地域の皆さまの健康をサポートします。</p><div class="cta"><a class="btn" href="prescription/">処方せん受付のご案内 →</a><a class="btn light" href="contact/">LINEでのご相談 →</a></div></div>
-    <div class="hp-hero-mark" aria-hidden="true"><svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg"><circle cx="150" cy="130" r="116" fill="#d9ead9"/><circle cx="150" cy="130" r="94" fill="#f7fbf4" stroke="#c4dfc6" stroke-width="2"/><path d="M150 134C112 126 78 101 98 77C121 51 146 82 150 104C154 82 179 51 202 77C222 101 188 126 150 134Z" fill="#75a689"/><path d="M150 134C112 142 78 167 98 191C121 217 146 186 150 164C154 186 179 217 202 191C222 167 188 142 150 134Z" fill="#4b8760"/><path d="M150 130V216" stroke="#3c7351" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="134" r="7" fill="#f7fbf4"/></svg></div></div></section>
+    body=style+f'''<section class="hp-hero"><div class="wrap hp-hero-inner {'hp-has-photo' if photo else ''}"><div><p class="hp-kicker">TAKAHASHI PHARMACY · 川崎大師駅近く</p><h1>毎日の健康に、<br>寄り添う薬局。</h1><p class="lead">お薬や健康のご相談から、日々の健康づくりまで。タカハシ薬局は地域の皆さまの健康をサポートします。</p><div class="cta"><a class="btn" href="prescription/">処方せん受付のご案内 →</a><a class="btn light" href="contact/">LINEでのご相談 →</a></div></div>
+    {hero_visual}</div></section>
     <main class="wrap hp-main"><div class="hp-hours"><div><span class="hp-kicker">OPENING HOURS</span><p><strong>9:00〜19:00</strong> 月〜土</p><p class="small">定休日：日曜日・祝日</p></div><a class="btn light" href="tel:0442663994">電話 044-266-3994</a></div>
     <section aria-labelledby="hp-services-title"><p class="sectionlabel">OUR SERVICES</p><h2 id="hp-services-title">薬局のご案内</h2><div class="hp-services">{tiles}</div></section>
     <section aria-labelledby="hp-news-title"><p class="sectionlabel">MONTHLY INFORMATION</p><h2 id="hp-news-title">今月の情報</h2><p class="muted">季節の健康情報、薬膳料理、おすすめ商品を毎月お届けします。</p><div class="cols3 hp-news-grid">{''.join(cards)}</div></section>
+    {history_section}
     <section aria-labelledby="hp-access-title"><p class="sectionlabel">ACCESS & CONTACT</p><h2 id="hp-access-title">店舗へのアクセス</h2><div class="hp-access"><div><h3>タカハシ薬局</h3><p>〒210-0802<br>神奈川県川崎市川崎区大師駅前1-6-7</p><p>京急大師線「川崎大師駅」近く</p><p class="small muted">営業時間外・定休日にいただいたLINEのお問い合わせは翌営業日以降に対応します。</p></div><div class="cta"><a class="btn" href="store/">店舗案内・地図を見る →</a><a class="btn light" href="https://line.me/R/ti/p/%40299qyrsf" rel="noreferrer">LINE公式アカウント →</a><a class="btn light" href="contact/">お問い合わせ →</a></div></div></section></main>'''
     return layout('川崎大師駅近くの薬局','home',body,'川崎市川崎区のタカハシ薬局。処方せん受付、お薬と健康のご相談、健康情報、薬膳料理レシピ、おすすめ商品、店舗案内。',root='./')
 
@@ -359,6 +373,10 @@ if __name__=='__main__':
             src=CONTENT/'assets'/p['image']
             assert src.is_file(),f'missing file: {src}'
             shutil.copy2(src,OUT/'assets'/src.name)
+    for name in ('pharmacy-exterior.jpg','pharmacy-history.jpg'):
+        src=CONTENT/'assets'/name
+        if src.is_file():
+            shutil.copy2(src,OUT/'assets'/name)
     # Replace only published print PDFs with the detailed A4 editions.
     # Original DM-format PDFs remain untouched under content/assets.
     import subprocess, sys
