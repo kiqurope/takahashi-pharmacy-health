@@ -111,7 +111,7 @@ def product_listing(data):
     cards = []
     for item in data:
         group = 'nippo' if '日邦薬品工業' in item.get('group', '') else 'other'
-        keywords = ' '.join(str(item.get(k, '')) for k in ('issue','title','description','summary','maker','group','category'))
+        keywords = ' '.join(str(item.get(k, '')) for k in ('issue','title','description','summary','maker','category'))
         latest_flag = '<span class="p-current-label">最新号</span>' if latest and item['id'] == latest['id'] else ''
         cards.append(f'''<a class="p-archive-card" data-product-card data-search="{E(keywords)}" data-group="{E(group)}" href="{E(item['id'])}.html" aria-label="{E(item['issue'])} {E(item['title'])}の商品紹介を読む">
             <div class="p-archive-media">{product_photo(item, 'thumb')}</div>
@@ -128,7 +128,7 @@ def product_listing(data):
         <div class="p-filters" role="group" aria-label="メーカー分類で絞り込む">
           <button type="button" data-product-group="all" aria-pressed="true">すべて</button>
           <button type="button" data-product-group="nippo" aria-pressed="false">日邦薬品工業</button>
-          <button type="button" data-product-group="other" aria-pressed="false">その他の取扱商品</button>
+          <button type="button" data-product-group="other" aria-pressed="false">その他の商品</button>
         </div>
         <label class="p-search-label" for="product-search">商品名や掲載月から探す</label>
         <input id="product-search" class="p-search" type="search" placeholder="例：若甦・10月・健康補助食品" autocomplete="off" aria-controls="product-archive-grid">
@@ -162,7 +162,7 @@ def product_listing(data):
       <section class="p-contact" aria-labelledby="p-consult-title">
          <span class="p-contact-icon" aria-hidden="true">✚</span>
          <div><p class="p-section-kicker">ASK YOUR PHARMACIST</p><h2 id="p-consult-title">商品について、気軽にご相談ください</h2>
-         <p>使い方や選び方、販売価格・在庫状況については、タカハシ薬局のスタッフがご案内します。</p>
+         <p>使い方や選び方、販売価格については、タカハシ薬局のスタッフがご案内します。</p>
          <p class="p-contact-hours">営業時間 9:00〜19:00　／　定休日 日曜日・祝日</p></div>
       </section>
       <p class="p-disclaimer">※掲載内容は商品の一般的なご案内です。</p>
@@ -202,7 +202,7 @@ def product_detail(p):
         <section class="p-detail-section" id="usage" aria-labelledby="p-usage-title"><div class="p-detail-section-heading"><p class="p-section-kicker">HOW TO USE</p><h2 id="p-usage-title">{E(usage_title)}</h2></div><div class="p-usage-panel"><span class="p-usage-icon" aria-hidden="true">01</span><p>{E(p.get('usage',''))}</p></div></section>
         <section class="p-detail-section" id="caution" aria-labelledby="p-caution-title"><div class="p-detail-section-heading"><p class="p-section-kicker">IMPORTANT</p><h2 id="p-caution-title">ご使用前にご確認ください</h2></div><div class="p-care-panel" role="note"><div>{medical_note}</div><p>{E(p.get('caution',''))}</p></div></section>
         <section class="p-detail-section" id="contact" aria-labelledby="p-contact-title">
-           <div class="p-contact p-contact-detail"><span class="p-contact-icon" aria-hidden="true">✚</span><div><p class="p-section-kicker">ASK YOUR PHARMACIST</p><h2 id="p-contact-title">迷ったら、タカハシ薬局へ</h2><p>ご自身に合うか、価格・在庫、使い方などお気軽にご相談ください。</p><p class="p-contact-hours">営業時間 9:00〜19:00　／　定休日 日曜日・祝日</p></div></div>
+           <div class="p-contact p-contact-detail"><span class="p-contact-icon" aria-hidden="true">✚</span><div><p class="p-section-kicker">ASK YOUR PHARMACIST</p><h2 id="p-contact-title">迷ったら、タカハシ薬局へ</h2><p>ご自身に合うか、価格や使い方などお気軽にご相談ください。</p><p class="p-contact-hours">営業時間 9:00〜19:00　／　定休日 日曜日・祝日</p></div></div>
            <div class="p-official"><h3>メーカー公式情報</h3><p>詳しい商品情報・使用上の注意は、メーカー公式ページおよび実際の商品・添付文書でご確認ください。</p>{source}</div>
         </section>
         <section class="p-related" aria-labelledby="p-related-title"><div class="p-section-heading"><div><p class="p-section-kicker">OTHER ISSUES</p><h2 id="p-related-title">ほかの月のおすすめ</h2></div></div><div class="p-related-grid">{recommendations}</div><a class="p-backlink" href="./#archive">← すべてのバックナンバーを見る</a></section>
