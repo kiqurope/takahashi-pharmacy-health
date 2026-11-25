@@ -24,6 +24,7 @@ def read(name):
 articles=read('articles.json')
 recipes=read('recipes.json')
 products=read('products.json')
+notices=read('notices.json')
 
 
 def layout(title,section,body,desc='',root='../'):
@@ -31,7 +32,7 @@ def layout(title,section,body,desc='',root='../'):
     tags=''.join(f'<a href="{E(h)}" {"aria-current=page" if k==section else ""}>{E(t)}</a>' for t,h,k in nav)
     mobile=''.join(f'<a href="{E(h)}"><span>{emoji}</span>{E(t)}</a>' for (t,h,k),emoji in zip(nav,['🏠','❤️','🥣','🌿']))
     if section=='home':
-        home_nav=[('ホーム','index.html'),('処方せん受付','prescription/'),('健康相談','contact/'),('健康情報','health/'),('薬膳料理','recipes/'),('おすすめ商品','products/'),('店舗案内','store/')]
+        home_nav=[('ホーム','index.html'),('お知らせ','index.html#notices'),('処方せん受付','prescription/'),('健康相談','contact/'),('健康情報','health/'),('薬膳料理','recipes/'),('おすすめ商品','products/'),('店舗案内','store/')]
         links=''.join(f'<a href="{E(h)}" {"aria-current=page" if h=="index.html" else ""}>{E(t)}</a>' for t,h in home_nav)
         header=f'''<header class="hp-header"><div class="wrap hp-top"><a class="brand" href="index.html"><em>✚</em> タカハシ薬局</a><div class="hp-top-contact"><span>月〜土 9:00〜19:00 ／ 日・祝休</span><a href="tel:0442663994">044-266-3994</a></div><details class="hp-mobile-nav"><summary>メニュー</summary><nav aria-label="スマートフォンメニュー">{links}</nav></details></div><nav class="wrap hp-desktop-nav" aria-label="メインメニュー">{links}</nav></header>'''
         ribbon='川崎大師駅近く｜タカハシ薬局'
@@ -222,6 +223,21 @@ def product_detail(p):
     return layout(p['title']+'｜'+p['issue'],'products',body,p.get('description',''),root='../')
 
 
+def notice_section():
+    # Notice data is independent of monthly content. Dates are inclusive, JST.
+    rows=[]
+    for n in notices:
+        expiry=n.get('expires_on','')
+        if expiry and date.fromisoformat(expiry)<SITE_DATE:
+            continue
+        date_text=date.fromisoformat(n['date']).strftime('%Y.%m.%d')
+        body=E(n.get('body','')).replace('\n','<br>')
+        rows.append(f'<article class="hp-notice-row" data-expires="{E(expiry)}"><time datetime="{E(n["date"])}">{date_text}</time><div><span class="hp-notice-type">{E(n.get("category","お知らせ"))}</span><h3>{E(n["title"])}</h3><p>{body}</p></div></article>')
+    empty_attr=' hidden' if rows else ''
+    return f'''<section id="notices" class="hp-notices" aria-labelledby="hp-notices-title"><p class="sectionlabel">NEWS & NOTICES</p><h2 id="hp-notices-title">お知らせ</h2><div class="hp-notice-list">{''.join(rows)}<p class="hp-notice-empty"{empty_attr}>現在掲載中の特別なお知らせはありません。<br>通常の営業時間・定休日は上記のとおりです。</p></div></section>
+<script>(function(){{const root=document.getElementById('notices');const now=new Intl.DateTimeFormat('sv-SE',{{timeZone:'Asia/Tokyo',year:'numeric',month:'2-digit',day:'2-digit'}}).format(new Date());const rows=[...root.querySelectorAll('[data-expires]')];rows.forEach(row=>{{if(row.dataset.expires&&row.dataset.expires<now)row.hidden=true;}});root.querySelector('.hp-notice-empty').hidden=rows.some(row=>!row.hidden);}})();</script>'''
+
+
 def front():
     # Homepage only: preserve all existing rich-menu destination URLs and content generators.
     services=[
@@ -288,6 +304,17 @@ def front():
 .hp-footer-note{border-top:1px solid #d8e5da;margin-top:20px;padding-top:15px;font-size:12px}
 .hp-hero .btn{padding:14px 18px}
 .hp-main{padding-bottom:44px}.hp-main section{margin-top:40px}
+.hp-notices{scroll-margin-top:20px}
+.hp-notice-list{background:#fff;border:1px solid #dce8df;border-radius:16px;overflow:hidden;border-top:4px solid #367d54}
+.hp-notice-row{padding:19px 22px;display:grid;grid-template-columns:112px minmax(0,1fr);gap:15px;align-items:start}
+.hp-notice-row+ .hp-notice-row{border-top:1px solid #e4ebe4}
+.hp-notice-row[hidden],.hp-notice-empty[hidden]{display:none!important}
+.hp-notice-row time{font-size:13px;color:#52675b;font-variant-numeric:tabular-nums;padding-top:3px}
+.hp-notice-type{display:inline-block;background:#eef4ed;border:1px solid #dae7dc;border-radius:4px;padding:2px 8px;color:#276347;font-size:12px;font-weight:750}
+.hp-notice-row h3{font-size:18px;margin:7px 0;color:#244735;line-height:1.5}
+.hp-notice-row p{font-size:15px;line-height:1.75;margin:0;color:#52675b;overflow-wrap:anywhere}
+.hp-notice-empty{font-size:14px;color:#52675b;margin:0;padding:20px 22px;line-height:1.7}
+@media(max-width:690px){.hp-notice-row{grid-template-columns:1fr;gap:5px;padding:16px}.hp-notice-row h3{font-size:17px}.hp-notice-empty{padding:16px}}
 .hp-hours{display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;background:#fff;border:1px solid #d9e7dc;border-radius:16px;padding:20px 22px;margin-top:-12px;position:relative;box-shadow:0 7px 20px #224e3010}
 .hp-hours p{margin:0}.hp-hours strong{font-size:23px}.hp-hours .hp-kicker{display:block;margin-bottom:3px}
 .hp-services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
@@ -320,6 +347,7 @@ def front():
     body=style+f'''<section class="hp-hero"><div class="wrap hp-hero-inner {'hp-has-photo' if photo else ''}"><div><p class="hp-kicker">昭和8年5月創業 · 川崎大師駅近く</p><h1>毎日の健康に、<br>寄り添う薬局。</h1><p class="lead">お薬や健康のご相談から、日々の健康づくりまで。タカハシ薬局は地域の皆さまの健康をサポートします。</p><div class="cta"><a class="btn" href="prescription/">処方せん受付のご案内 →</a><a class="btn light" href="contact/">LINEでのご相談 →</a></div></div>
     {hero_visual}</div></section>
     <main class="wrap hp-main"><div class="hp-hours"><div><span class="hp-kicker">OPENING HOURS</span><p><strong>9:00〜19:00</strong> 月〜土</p><p class="small">定休日：日曜日・祝日</p></div><a class="btn light" href="tel:0442663994">電話 044-266-3994</a></div>
+    {notice_section()}
     <section aria-labelledby="hp-services-title"><p class="sectionlabel">OUR SERVICES</p><h2 id="hp-services-title">薬局のご案内</h2><div class="hp-services">{tiles}</div></section>
     <section aria-labelledby="hp-news-title"><p class="sectionlabel">MONTHLY INFORMATION</p><h2 id="hp-news-title">今月の情報</h2><p class="muted">季節の健康情報、薬膳料理、おすすめ商品を毎月お届けします。</p><div class="cols3 hp-news-grid">{''.join(cards)}</div></section>
     {history_section}
