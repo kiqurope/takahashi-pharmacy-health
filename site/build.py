@@ -244,7 +244,8 @@ def front():
         if image_src:
             media=f'<div class="hp-news-media hp-media-{kind}"><img src="{E(image_src)}" alt="{E(item.get("image_credit") or item.get("title",""))}" loading="lazy" decoding="async"></div>'
         else:
-            media=f'<div class="hp-news-media hp-media-{kind}" aria-hidden="true"><span>MONTHLY<br>HEALTH</span></div>'
+            symbol={'health':'♡','recipes':'🍀','products':'✚'}[kind]
+            media=f'<div class="hp-news-media hp-media-{kind} hp-media-label" aria-hidden="true"><span class="hp-category-symbol">{symbol}</span><span class="hp-category-title">{E(title)}</span></div>'
         cards.append(f'<article class="hp-news hp-{color}"><a href="{E(href)}" class="hp-news-visual" aria-label="{E(item.get("title",title))}">{media}</a><p class="hp-news-kind">{E(title)}</p><span class="issue">{E(item.get("issue","準備中"))}</span><h3><a href="{E(href)}">{E(item.get("title","掲載準備中"))}</a></h3><p>{E(excerpt)}</p><a class="hp-news-all" href="{kind}/">一覧・バックナンバー →</a></article>')
     photo=(CONTENT/'assets'/'pharmacy-exterior.jpg').is_file()
     history=(CONTENT/'assets'/'pharmacy-history.jpg').is_file()
@@ -270,11 +271,14 @@ def front():
 .hp-hero-mark{position:relative;min-height:240px;display:grid;place-items:center}
 .hp-hero-mark svg{width:100%;max-width:350px;height:auto}
 .hp-news-visual{display:block;width:100%;text-decoration:none}
-.hp-news-media{height:166px;overflow:hidden;border-radius:12px;display:grid;place-items:center;background:#edf4e9}
-.hp-news-media img{width:100%;height:100%;object-fit:cover;display:block}
-.hp-media-products img{object-fit:contain;padding:12px;background:#f2f7fc}
-.hp-media-health{background:linear-gradient(140deg,#fbeae8,#fff8f4);color:#a6404d;text-align:center}
-.hp-media-health span{font-weight:850;font-size:22px;letter-spacing:.17em;line-height:1.35}
+.hp-news-media{width:100%;aspect-ratio:4/3;position:relative;overflow:hidden;border-radius:12px;background:#f3f6f1;display:flex;align-items:center;justify-content:center}
+.hp-news-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block;padding:8px}
+.hp-media-products{background:#f0f6fc}
+.hp-media-recipes{background:#f0f5ed}
+.hp-media-label{flex-direction:column;gap:10px;color:var(--hp-color,#367d54);text-align:center}
+.hp-media-health{background:#fae9e9;color:#a6404d}
+.hp-category-symbol{display:grid;place-items:center;border:2px solid currentColor;border-radius:50%;width:62px;height:62px;font-size:43px;line-height:1}
+.hp-category-title{font-weight:850;font-size:clamp(18px,2vw,24px);letter-spacing:.08em;line-height:1.35}
 .hp-footer{background:#eef4ed;text-align:left}
 .hp-footer-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:20px;align-items:start}
 .hp-footer-inner strong{font-size:21px;color:#244735}
@@ -302,7 +306,7 @@ def front():
 .hp-access p{margin:5px 0}.hp-access .cta{margin:0;flex-direction:column}
 .hp-hero-mark .hp-emblem-line{stroke:#75a689}
 @media(max-width:900px){.hp-top-contact,.hp-desktop-nav{display:none}.hp-top{min-height:68px;gap:8px}.hp-top .brand{font-size:20px}.hp-mobile-nav{display:block;position:relative}.hp-mobile-nav summary{cursor:pointer;list-style:none;background:#eef5ed;padding:10px 15px;border-radius:9px;font-size:13px;font-weight:800;color:#285e43}.hp-mobile-nav summary::-webkit-details-marker{display:none}.hp-mobile-nav nav{display:grid;position:absolute;right:0;top:46px;width:min(260px,80vw);background:#fff;border:1px solid #dbe8df;border-radius:13px;box-shadow:0 8px 24px #183a2d22;padding:10px;z-index:20}.hp-mobile-nav nav a{font-size:15px;padding:10px 13px}.hp-hero-inner{grid-template-columns:1.3fr .7fr}}
-@media(max-width:690px){.hp-footer-inner{grid-template-columns:1fr}.hp-footer-inner nav a{padding:8px 4px}.hp-home .mobilebar a{font-size:11px}.hp-news-media{height:175px}.hp-home .wrap{padding-left:16px;padding-right:16px}.hp-hero{padding:30px 0 27px}.hp-hero-inner{grid-template-columns:1fr;gap:4px}.hp-hero-mark{display:none}.hp-hours{grid-template-columns:1fr;padding:17px;gap:10px;margin-top:15px}.hp-services{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.hp-service,.hp-news{padding:14px}.hp-service h3{font-size:16px}.hp-service p{font-size:12px}.hp-service strong{font-size:12px}.hp-news-grid{grid-template-columns:1fr}.hp-access{grid-template-columns:1fr;padding:20px}.hp-main section{margin-top:29px}.hp-hero h1{font-size:32px}}
+@media(max-width:690px){.hp-footer-inner{grid-template-columns:1fr}.hp-footer-inner nav a{padding:8px 4px}.hp-home .mobilebar a{font-size:11px}.hp-news-media{aspect-ratio:4/3}.hp-home .wrap{padding-left:16px;padding-right:16px}.hp-hero{padding:30px 0 27px}.hp-hero-inner{grid-template-columns:1fr;gap:4px}.hp-hero-mark{display:none}.hp-hours{grid-template-columns:1fr;padding:17px;gap:10px;margin-top:15px}.hp-services{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.hp-service,.hp-news{padding:14px}.hp-service h3{font-size:16px}.hp-service p{font-size:12px}.hp-service strong{font-size:12px}.hp-news-grid{grid-template-columns:1fr}.hp-access{grid-template-columns:1fr;padding:20px}.hp-main section{margin-top:29px}.hp-hero h1{font-size:32px}}
 .hp-has-photo{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:32px}
 .hp-store-photo,.hp-history figure{margin:0;min-width:0}
 .hp-store-photo img,.hp-history img{display:block;width:100%;height:auto;border-radius:16px}
