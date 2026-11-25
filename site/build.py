@@ -81,6 +81,9 @@ def product_photo(p, variant='detail'):
     if image_url.startswith('https://'):
         priority = 'loading="eager" fetchpriority="high"' if variant == 'featured' else 'loading="lazy"'
         return f'<figure class="{photo_class}"><img src="{E(image_url)}" alt="{E(p["title"])}の商品パッケージ" {priority} decoding="async"><figcaption>{E(credit)}</figcaption></figure>'
+    if p.get('image'):
+        priority = 'loading="eager" fetchpriority="high"' if variant == 'featured' else 'loading="lazy"'
+        return f'<figure class="{photo_class}"><img src="../assets/{E(p["image"])}" alt="{E(credit or p["title"])}" {priority} decoding="async"><figcaption>{E(credit)}</figcaption></figure>'
     return f'<div class="{photo_class} p-image-fallback" role="img" aria-label="{E(p["title"])}"><span aria-hidden="true">✦</span><strong>{E(p["title"])}</strong></div>'
 
 
