@@ -212,13 +212,58 @@ def product_detail(p):
 
 
 def front():
+    # Homepage only: preserve all existing rich-menu destination URLs and content generators.
+    services=[
+        ('prescription/','01','処方せん受付','LINEで処方せんの写真を送信する方法をご案内します。','受付方法を見る','green'),
+        ('contact/','02','お薬・健康のご相談','お薬の使い方や日々の健康について、お気軽にご相談ください。','相談方法を見る','green'),
+        ('health/','03','健康情報','季節に合わせた健康習慣と栄養のお話。','健康情報を見る','red'),
+        ('recipes/','04','薬膳料理レシピ','毎日の食卓に取り入れたい、季節の料理。','レシピを見る','green'),
+        ('products/','05','今月のおすすめ商品','薬局から毎月おすすめの商品をご紹介します。','商品情報を見る','blue'),
+        ('store/','06','店舗案内','所在地・営業時間・アクセスのご案内。','店舗案内を見る','green'),
+    ]
+    tiles=''.join(f'<a class="hp-service hp-{color}" href="{E(url)}"><span class="hp-service-num">{E(num)}</span><h3>{E(title)}</h3><p>{E(desc)}</p><strong>{E(action)} <span aria-hidden="true">→</span></strong></a>' for url,num,title,desc,action,color in services)
     cards=[]
-    for kind,data,emoji,title in [('health',articles,'❤️','健康情報'),('recipes',recipes,'🥣','薬膳レシピ'),('products',products,'🌿','今月のおすすめ')]:
+    for kind,data,title,color in [('health',articles,'健康情報','red'),('recipes',recipes,'薬膳料理レシピ','green'),('products',products,'おすすめ商品','blue')]:
         item=data[0] if data else {}
+        href=f'{kind}/{item["id"]}.html' if item else f'{kind}/'
         excerpt=item.get('subtitle',item.get('description','掲載準備中'))
-        cards.append(f'<article class="card feature"><div class="label">{emoji}</div><div><span class="issue">{E(item.get("issue","準備中"))}</span><h2>{title}</h2><p>{E(item.get("title",""))}</p><p class="small">{E(excerpt)}</p></div><a class="btn" href="{kind}/">{title}を開く →</a></article>')
-    body=hero('タカハシ薬局 公式LINE', '毎日の健康を、もっと身近に。','季節の健康情報・薬膳レシピ・おすすめ商品をご案内します。')+f'''<main class="wrap"><section><p class="sectionlabel">LINE MENU</p><h2>読みたい情報を選んでください</h2><div class="grid">{''.join(cards)}</div></section><section class="info"><h3>新しい記事について</h3><p>健康情報・薬膳レシピ・おすすめ商品を順次追加します。過去の記事や商品のご案内も各一覧から確認できます。</p></section></main>'''
-    return layout('健康情報・薬膳レシピ・おすすめ商品','home',body,root='./')
+        cards.append(f'<article class="hp-news hp-{color}"><p class="hp-news-kind">{E(title)}</p><span class="issue">{E(item.get("issue","準備中"))}</span><h3><a href="{E(href)}">{E(item.get("title","掲載準備中"))}</a></h3><p>{E(excerpt)}</p><a class="hp-news-all" href="{kind}/">一覧・バックナンバー →</a></article>')
+    style = '''<style>
+.hp-hero{margin:0;background:#eaf3ea;padding:56px 0 48px;position:relative;overflow:hidden}
+.hp-hero-inner{display:grid;grid-template-columns:1.4fr .8fr;align-items:center;gap:28px}
+.hp-kicker{font-size:12px;font-weight:850;letter-spacing:.14em;color:#47765a}
+.hp-hero h1{color:#214d37;line-height:1.4;font-size:clamp(32px,5vw,49px)}
+.hp-hero .lead{max-width:510px}
+.hp-hero-mark{position:relative;min-height:240px;display:grid;place-items:center}
+.hp-hero-mark svg{width:100%;max-width:300px;height:auto}
+.hp-hero .btn{padding:14px 18px}
+.hp-main{padding-bottom:44px}.hp-main section{margin-top:40px}
+.hp-hours{display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;background:#fff;border:1px solid #d9e7dc;border-radius:16px;padding:20px 22px;margin-top:-12px;position:relative;box-shadow:0 7px 20px #224e3010}
+.hp-hours p{margin:0}.hp-hours strong{font-size:23px}.hp-hours .hp-kicker{display:block;margin-bottom:3px}
+.hp-services{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.hp-service,.hp-news{background:#fff;border:1px solid #dce8df;border-radius:18px;padding:19px;color:#244735;text-decoration:none;min-width:0}
+.hp-service{display:flex;flex-direction:column;gap:7px;border-top:4px solid var(--hp-color,#367d54)}
+.hp-service:hover{background:#f5fbf5;border-color:var(--hp-color,#367d54)}
+.hp-service-num{color:var(--hp-color,#367d54);font-size:12px;font-weight:900;letter-spacing:.1em}
+.hp-service h3{margin:0;font-size:19px}.hp-service p,.hp-news p{font-size:14px;color:#52675b;margin:0}
+.hp-service strong{font-size:13px;margin-top:auto;color:var(--hp-color,#367d54)}
+.hp-red{--hp-color:#af3e4c}.hp-blue{--hp-color:#17639a}.hp-green{--hp-color:#367d54}
+.hp-news{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.hp-news-kind{color:var(--hp-color,#367d54)!important;font-weight:850;font-size:12px!important}
+.hp-news h3{font-size:18px;margin:0;line-height:1.55}.hp-news h3 a{color:#224a35;text-decoration:none}
+.hp-news-all{margin-top:auto;font-size:13px;font-weight:800;color:var(--hp-color,#367d54)}
+.hp-access{background:#fff;border:1px solid #dce8df;border-radius:18px;padding:25px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.hp-access p{margin:5px 0}.hp-access .cta{margin:0;flex-direction:column}
+.hp-hero-mark .hp-emblem-line{stroke:#75a689}
+@media(max-width:690px){.hp-hero{padding:30px 0 27px}.hp-hero-inner{grid-template-columns:1fr;gap:4px}.hp-hero-mark{display:none}.hp-hours{grid-template-columns:1fr;padding:17px;gap:10px;margin-top:15px}.hp-services{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.hp-service,.hp-news{padding:14px}.hp-service h3{font-size:16px}.hp-service p{font-size:12px}.hp-service strong{font-size:12px}.hp-news-grid{grid-template-columns:1fr}.hp-access{grid-template-columns:1fr;padding:20px}.hp-main section{margin-top:29px}.hp-hero h1{font-size:32px}}
+</style>'''
+    body=style+f'''<section class="hp-hero"><div class="wrap hp-hero-inner"><div><p class="hp-kicker">TAKAHASHI PHARMACY · 川崎大師駅近く</p><h1>毎日の健康に、<br>寄り添う薬局。</h1><p class="lead">お薬や健康のご相談から、日々の健康づくりまで。タカハシ薬局は地域の皆さまの健康をサポートします。</p><div class="cta"><a class="btn" href="prescription/">処方せん受付のご案内 →</a><a class="btn light" href="contact/">LINEでのご相談 →</a></div></div>
+    <div class="hp-hero-mark" aria-hidden="true"><svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg"><circle cx="150" cy="130" r="116" fill="#d9ead9"/><circle cx="150" cy="130" r="94" fill="#f7fbf4" stroke="#c4dfc6" stroke-width="2"/><path d="M150 134C112 126 78 101 98 77C121 51 146 82 150 104C154 82 179 51 202 77C222 101 188 126 150 134Z" fill="#75a689"/><path d="M150 134C112 142 78 167 98 191C121 217 146 186 150 164C154 186 179 217 202 191C222 167 188 142 150 134Z" fill="#4b8760"/><path d="M150 130V216" stroke="#3c7351" stroke-width="4" stroke-linecap="round"/><circle cx="150" cy="134" r="7" fill="#f7fbf4"/></svg></div></div></section>
+    <main class="wrap hp-main"><div class="hp-hours"><div><span class="hp-kicker">OPENING HOURS</span><p><strong>9:00〜19:00</strong> 月〜土</p><p class="small">定休日：日曜日・祝日</p></div><a class="btn light" href="tel:0442663994">電話 044-266-3994</a></div>
+    <section aria-labelledby="hp-services-title"><p class="sectionlabel">OUR SERVICES</p><h2 id="hp-services-title">薬局のご案内</h2><div class="hp-services">{tiles}</div></section>
+    <section aria-labelledby="hp-news-title"><p class="sectionlabel">MONTHLY INFORMATION</p><h2 id="hp-news-title">最新の健康だより</h2><p class="muted">季節の健康情報、薬膳料理、おすすめ商品を毎月お届けします。</p><div class="cols3 hp-news-grid">{''.join(cards)}</div></section>
+    <section aria-labelledby="hp-access-title"><p class="sectionlabel">ACCESS & CONTACT</p><h2 id="hp-access-title">店舗へのアクセス</h2><div class="hp-access"><div><h3>タカハシ薬局</h3><p>〒210-0802<br>神奈川県川崎市川崎区大師駅前1-6-7</p><p>京急大師線「川崎大師駅」近く</p><p class="small muted">営業時間外・定休日にいただいたLINEのお問い合わせは翌営業日以降に対応します。</p></div><div class="cta"><a class="btn" href="store/">店舗案内・地図を見る →</a><a class="btn light" href="contact/">お問い合わせ →</a></div></div></section></main>'''
+    return layout('川崎大師駅近くの薬局','home',body,'川崎市川崎区のタカハシ薬局。処方せん受付、お薬と健康のご相談、健康情報、薬膳料理レシピ、おすすめ商品、店舗案内。',root='./')
 
 
 def line_guide(kind):
