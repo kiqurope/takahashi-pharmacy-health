@@ -246,9 +246,9 @@ def front():
         ('products/','03','今月のおすすめ','薬局から毎月おすすめの商品をご紹介します。','おすすめ商品を見る','blue'),
         ('recipes/','04','薬膳レシピ','毎日の食卓に取り入れたい、季節の料理。','薬膳レシピを見る','green'),
         ('store/','05','店舗案内','所在地・営業時間・アクセスのご案内。','店舗案内を見る','green'),
-        ('contact/','06','お問い合わせ','お薬の使い方や日々の健康について、お気軽にご相談ください。','お問い合わせ','green'),
+        ('contact/','06','お問い合わせ','','お問い合わせ','green'),
     ]
-    tiles=''.join(f'<a class="hp-service hp-{color}" href="{E(url)}"><span class="hp-service-num">{E(num)}</span><h3>{E(title)}</h3><p>{E(desc)}</p><strong>{E(action)} <span aria-hidden="true">→</span></strong></a>' for url,num,title,desc,action,color in services)
+    tiles=''.join(f'<a class="hp-service hp-{color}" href="{E(url)}"><span class="hp-service-num">{E(num)}</span><h3>{E(title)}</h3>{('<p>'+E(desc)+'</p>') if desc else ''}<strong>{E(action)} <span aria-hidden="true">→</span></strong></a>' for url,num,title,desc,action,color in services)
     cards=[]
     for kind,data,title,color in [('health',articles,'健康情報','red'),('recipes',recipes,'薬膳料理レシピ','green'),('products',products,'おすすめ商品','blue')]:
         item=data[0] if data else {}
