@@ -358,9 +358,10 @@ def front():
 def line_guide(kind):
     prescription = kind == 'prescription'
     title = '処方せん送信' if prescription else 'お問い合わせ'
-    label = 'LINEで処方せんを送る' if prescription else 'LINEでお問合せする'
+    label = 'LINEで処方せんを送る' if prescription else 'LINEでお問い合わせ'
     color = '#226b46' if prescription else '#175c96'
-    intro = 'ご来局前に、紙の処方せんの写真をLINEでお送りいただけます。' if prescription else 'お薬や健康について、お問合せください。'
+    intro = 'ご来局前に、紙の処方せんの写真をLINEでお送りいただけます。' if prescription else 'LINEでのお問い合わせは、商品や営業時間などに関するご質問を受け付けております。'
+    phone_section = '' if prescription else '<section><p>お薬の相談・健康相談はお電話にてお願いいたします。</p><a class="button" href="tel:0442663994">電話で問い合わせ →</a></section>'
     steps = (
         '<li>紙の処方せん全体が読めるよう、明るい場所で撮影してください。複数枚ある場合はすべて撮影してください。</li>'
         '<li>下のボタンから当薬局のLINEトークを開き、写真を添付して送信してください。</li>'
@@ -377,7 +378,7 @@ def line_guide(kind):
     )
     return f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>{title} | タカハシ薬局</title><style>
 *{{box-sizing:border-box}}body{{margin:0;background:#f3f7f5;color:#20352e;font:16px/1.8 system-ui,sans-serif;overflow-wrap:anywhere}}header{{background:{color};color:white;padding:16px;text-align:center;font-weight:700}}main{{max-width:640px;margin:auto;padding:18px 16px 32px}}section{{background:white;border:1px solid #dbe5df;border-radius:16px;padding:20px;margin:14px 0}}h1{{font-size:29px;line-height:1.4;margin:8px 0;color:{color}}}h2{{font-size:19px;line-height:1.5;margin:0 0 8px}}p{{margin:8px 0}}ol{{padding-left:1.5em;margin:10px 0}}li{{padding:4px 0}}.hours{{font-weight:700}}.button{{display:block;background:#087c3e;color:white;text-align:center;text-decoration:none;font-weight:700;border-radius:12px;padding:16px;margin:18px 0 8px;font-size:18px}}a:focus-visible{{outline:3px solid #c47c00;outline-offset:4px}}.note{{font-size:14px;color:#43534b}}.caution{{border-left:5px solid #b57620}}footer{{text-align:center;font-size:13px;color:#52645a;padding:8px 16px 24px}}
-</style></head><body><header>🍀 タカハシ薬局</header><main><h1>{title}</h1><p>{intro}</p><section><h2>ご利用方法</h2><ol>{steps}</ol><a class="button" href="https://line.me/R/oaMessage/%40299qyrsf" rel="noreferrer">{label} →</a><p class="note">ボタンを押すだけでは送信されません。LINEトークで送信操作をしてください。</p></section><section><h2>営業時間・返信について</h2><p class="hours">営業時間 9:00〜19:00<br>定休日：日曜日・祝日</p><p>営業時間外・定休日に届いたメッセージは翌営業日以降に対応します。</p></section><section class="caution">{notice}</section><section><h2>個人情報について</h2><p class="note">この案内ページには入力・写真アップロード機能はありません。お問合せや写真の送信は、タカハシ薬局のLINE公式アカウントのトーク画面で行ってください。</p></section></main><footer>タカハシ薬局</footer></body></html>'''
+</style></head><body><header>🍀 タカハシ薬局</header><main><h1>{title}</h1><p>{intro}</p><section><h2>ご利用方法</h2><ol>{steps}</ol><a class="button" href="https://line.me/R/oaMessage/%40299qyrsf" rel="noreferrer">{label} →</a><p class="note">ボタンを押すだけでは送信されません。LINEトークで送信操作をしてください。</p></section>{phone_section}<section><h2>営業時間・返信について</h2><p class="hours">営業時間 9:00〜19:00<br>定休日：日曜日・祝日</p><p>営業時間外・定休日に届いたメッセージは翌営業日以降に対応します。</p></section><section class="caution">{notice}</section><section><h2>個人情報について</h2><p class="note">この案内ページには入力・写真アップロード機能はありません。お問合せや写真の送信は、タカハシ薬局のLINE公式アカウントのトーク画面で行ってください。</p></section></main><footer>タカハシ薬局</footer></body></html>'''
 
 
 def store_guide():
