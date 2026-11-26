@@ -241,12 +241,12 @@ def notice_section():
 def front():
     # Homepage only: preserve all existing rich-menu destination URLs and content generators.
     services=[
-        ('prescription/','01','処方せん受付','LINEで処方せんの写真を送信する方法をご案内します。','受付方法を見る','green'),
-        ('contact/','02','お薬・健康のご相談','お薬の使い方や日々の健康について、お気軽にご相談ください。','相談方法を見る','green'),
-        ('health/','03','健康情報','季節に合わせた健康習慣と栄養のお話。','健康情報を見る','red'),
-        ('recipes/','04','薬膳料理レシピ','毎日の食卓に取り入れたい、季節の料理。','レシピを見る','green'),
-        ('products/','05','今月のおすすめ商品','薬局から毎月おすすめの商品をご紹介します。','商品情報を見る','blue'),
-        ('store/','06','店舗案内','所在地・営業時間・アクセスのご案内。','店舗案内を見る','green'),
+        ('prescription/','01','処方せん送信','LINEで処方せんの写真を送信する方法をご案内します。','処方せんを送信する','green'),
+        ('health/','02','健康情報','季節に合わせた健康習慣と栄養のお話。','健康情報を見る','red'),
+        ('products/','03','今月のおすすめ','薬局から毎月おすすめの商品をご紹介します。','おすすめ商品を見る','blue'),
+        ('recipes/','04','薬膳レシピ','毎日の食卓に取り入れたい、季節の料理。','薬膳レシピを見る','green'),
+        ('store/','05','店舗案内','所在地・営業時間・アクセスのご案内。','店舗案内を見る','green'),
+        ('contact/','06','お問い合わせ','お薬の使い方や日々の健康について、お気軽にご相談ください。','お問い合わせ','green'),
     ]
     tiles=''.join(f'<a class="hp-service hp-{color}" href="{E(url)}"><span class="hp-service-num">{E(num)}</span><h3>{E(title)}</h3><p>{E(desc)}</p><strong>{E(action)} <span aria-hidden="true">→</span></strong></a>' for url,num,title,desc,action,color in services)
     cards=[]
